@@ -1,14 +1,48 @@
 "use client";
 
+// React & NextJS
 import { ReactNode } from "react";
+
+// UI
 import { NextUIProvider } from "@nextui-org/react";
+
+// Web3
+import type { Hex } from "viem";
+import { polygonAmoy } from "viem/chains";
+import { http, WagmiProvider, createConfig } from "wagmi";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { smartAccountConnector } from "@cometh/connect-sdk-4337";
+
+// Env
+import { bundlerUrl, comethApiKey, paymasterUrl, rpcUrl } from "@/environment/smart_account";
+
+const queryClient = new QueryClient();
+
+const connector = smartAccountConnector({
+    comethApiKey,
+    bundlerUrl,
+    rpcUrl
+});
+
+const config = createConfig({
+    chains: [polygonAmoy],
+    connectors: [connector],
+    transports: {
+        [polygonAmoy.id]: http(),
+    },
+    // ssr: true, // To avoid client - server rendering errors
+});
 
 interface ProvidersProps {
     children: ReactNode;
 }
 
 export const Providers: React.FC<ProvidersProps> = ({ children }) => {
-    return <NextUIProvider>
-        {children}
-    </NextUIProvider>
+    return <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+            <NextUIProvider>
+                {children}
+            </NextUIProvider>
+        </QueryClientProvider>
+    </WagmiProvider>
 }

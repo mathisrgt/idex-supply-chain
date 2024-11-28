@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cometh/connect-sdk-4337": "^0.1.13",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
+    "@mui/material": "^6.1.8",
     "@nextui-org/react": "^2.4.8",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -18,7 +22,9 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "viem": "^2.21.49",
+    "wagmi": "^2.13.0"
   },
   "devDependencies": {
     "@types/node": "^20",
