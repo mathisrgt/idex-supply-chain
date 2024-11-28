@@ -1,40 +1,37 @@
+"use client";
+
+// React & Next.js
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 // UI
 import { Button } from "@nextui-org/react";
-import Link from "next/link";
-import { useAccount } from "wagmi";
 
-// Viem
-// import { polygonAmoy } from 'viem/chains';
+// Wagmi
+import { useAccount, useConnect } from "wagmi";
 
 export default function Home() {
-  // async function createSmartWallet() {
-  //   const smartAccount = await createSafeSmartAccount({
-  //     // From the Cometh Dashboard
-  //     comethApiKey,
+  const router = useRouter();
 
-  //     // Chain definition using Chain (Viem) type
-  //     chain: polygonAmoy,
+  const { connectors, connect } = useConnect();
+  const { address, isConnected } = useAccount();
 
-  //     // ENTRYPOINT_ADDRESS_V07 will use a Pimlico contract
-  //     entryPoint: ENTRYPOINT_ADDRESS_V07,
+  async function connectWithWagmi() {
+    connect({ chainId: 80002, connector: connectors[0] });
+  };
 
-  //     // Optional: Default PUBLIC RPC URL used is managed by Cometh
-  //     rpcUrl,
-
-  //     // Optional: Choose an existing wallet address 
-  //     // smartAccountAddress: WALLET_ADDRESS
-
-  //     // Other optional parameters: read here.
-  //   });
-  // }
-
-  const { address } = useAccount()
+  useEffect(() => {
+    if (isConnected) {
+      router.push("/dashboard");
+    }
+  }, [isConnected]);
 
   return (
     <main>
-      <p>{address}</p>
-      <h1>Welcome to IDEX Supply Chain App</h1>
-      <Link href="/dashboard"><Button>Start</Button></Link>
+      <p>{isConnected}</p>
+      {address && <p>{address}</p>}
+      <h1>Welcome</h1>
+      <Button onClick={connectWithWagmi}>Start</Button>
     </main>
   );
 }

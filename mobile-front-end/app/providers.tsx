@@ -19,12 +19,14 @@ import { bundlerUrl, comethApiKey, paymasterUrl, rpcUrl } from "@/environment/sm
 const queryClient = new QueryClient();
 
 const connector = smartAccountConnector({
-    comethApiKey,
+    chain: polygonAmoy,
+    apiKey: comethApiKey,
     bundlerUrl,
-    rpcUrl
+    rpcUrl,
+    paymasterUrl
 });
 
-const config = createConfig({
+const web3Config = createConfig({
     chains: [polygonAmoy],
     connectors: [connector],
     transports: {
@@ -38,7 +40,7 @@ interface ProvidersProps {
 }
 
 export const Providers: React.FC<ProvidersProps> = ({ children }) => {
-    return <WagmiProvider config={config}>
+    return <WagmiProvider config={web3Config}>
         <QueryClientProvider client={queryClient}>
             <NextUIProvider>
                 {children}
