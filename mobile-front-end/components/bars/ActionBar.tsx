@@ -7,9 +7,6 @@ import { useRouter } from "next/navigation";
 // UI
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button } from "@nextui-org/react";
 
-// UX (Components)
-import NavBar from "@/components/NavBar";
-
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Pencil, Plus } from "lucide-react";

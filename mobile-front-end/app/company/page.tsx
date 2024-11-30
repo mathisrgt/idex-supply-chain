@@ -8,14 +8,15 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button } from "@nextui-org/react";
 
 // UX (Components)
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/bars/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { ArrowRightSquare, Plus } from "lucide-react";
-import ActionBar from "@/components/ActionBar";
+import ActionBar from "@/components/bars/ActionBar";
 import AccountList from "@/components/lists/AccountList";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
+import AccountSearchBar from "@/components/bars/AccountSearchBar";
 
 
 // Features: 
@@ -31,6 +32,7 @@ export default function Company() {
         <>
             <main className="p-4 flex flex-col gap-4">
                 <h1>Company</h1>
+                <AccountSearchBar />
                 <AccountList />
             </main>
             <NavBar />

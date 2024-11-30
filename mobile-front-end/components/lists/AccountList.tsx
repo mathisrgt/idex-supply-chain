@@ -8,27 +8,15 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, Input } from "@nextui-org/react";
 
 // UX (Components)
-import NavBar from "@/components/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Plus, Search } from "lucide-react";
-import ActionBar from "@/components/ActionBar";
 
 export default function AccountList() {
 
     return (
         <>
-            <div className="flex gap-2">
-                <Input
-                    name="search"
-                    placeholder="Search..."
-                    aria-label="Search input"
-                />
-                <Button type="submit">
-                    <Plus size={17} />
-                </Button>
-            </div >
             <div className="flex">
                 <Card className="w-1/2">
                     <CardHeader className="flex gap-3">

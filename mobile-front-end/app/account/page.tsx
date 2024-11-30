@@ -9,7 +9,7 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Link } from "@nextui-o
 import { Button } from "@nextui-org/react";
 
 // UX (Components)
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/bars/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi';

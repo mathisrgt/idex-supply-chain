@@ -8,12 +8,11 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 
 // UX (Components)
-import NavBar from "@/components/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Plus } from "lucide-react";
-import ActionBar from "@/components/ActionBar";
+
 
 export default function FlowList() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();

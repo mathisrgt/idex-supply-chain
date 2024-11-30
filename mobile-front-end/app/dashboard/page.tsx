@@ -8,12 +8,12 @@ import { useRouter } from "next/navigation";
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button } from "@nextui-org/react";
 
 // UX (Components)
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/bars/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Plus } from "lucide-react";
-import ActionBar from "@/components/ActionBar";
+import ActionBar from "@/components/bars/ActionBar";
 import FlowList from "@/components/lists/FlowList";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 
