@@ -15,6 +15,7 @@ import { useAccount, useDisconnect } from 'wagmi'
 import { Plus } from "lucide-react";
 import { HomeChart } from "@/components/charts/homeChart";
 import { useEffect } from "react";
+import FlowPreviewList from "@/components/lists/FlowPreviewList";
 
 export default function Home() {
     const router = useRouter();
@@ -31,8 +32,9 @@ export default function Home() {
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
-                <h1 className="text-xl">Good morning 👋</h1>
+                <h1 className="text-xl">Home</h1>
                 <HomeChart />
+                <FlowPreviewList />
             </main>
             <NavBar />
         </>
