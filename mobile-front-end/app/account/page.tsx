@@ -13,8 +13,11 @@ import NavBar from "@/components/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi';
+import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 
 export default function Account() {
+    useRedirectOnLargeScreen();
+
     const router = useRouter();
 
     const { address, isConnected } = useAccount();

@@ -15,8 +15,11 @@ import { useAccount, useDisconnect } from 'wagmi'
 import { Plus } from "lucide-react";
 import ActionBar from "@/components/ActionBar";
 import FlowList from "@/components/lists/FlowList";
+import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 
 export default function Dashboard() {
+    useRedirectOnLargeScreen();
+
     const router = useRouter();
 
     const { address, isConnected } = useAccount();

@@ -16,19 +16,20 @@ import { Plus } from "lucide-react";
 import { HomeChart } from "@/components/charts/homeChart";
 import { useEffect } from "react";
 import FlowPreviewList from "@/components/lists/FlowPreviewList";
+import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 
 export default function Home() {
+    useRedirectOnLargeScreen();
     const router = useRouter();
 
     const { address, isConnected } = useAccount();
 
-    // useEffect(() => {
-    //     if (!isConnected) {
-    //         router.push('/');
-    //     }
-    // }, []);
+    useEffect(() => {
+        // if (!isConnected) {
+        //     router.push('/');
+        // }
+    }, []);
 
-    // TODO If not connected, loading component
     return (
         <>
             <main className="p-4 flex flex-col gap-4">

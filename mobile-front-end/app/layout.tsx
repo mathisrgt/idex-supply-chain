@@ -4,7 +4,7 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "WoodTracker",
-  description: "Wood supply chain traceability and complience dApp for IDEX energy company.",
+  description: "Wood supply chain traceability and complience dApp.",
 };
 
 export default function RootLayout({

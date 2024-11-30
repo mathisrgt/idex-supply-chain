@@ -15,6 +15,7 @@ import { useAccount, useDisconnect } from 'wagmi'
 import { ArrowRightSquare, Plus } from "lucide-react";
 import ActionBar from "@/components/ActionBar";
 import AccountList from "@/components/lists/AccountList";
+import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 
 
 // Features: 
@@ -24,6 +25,8 @@ import AccountList from "@/components/lists/AccountList";
 // - Update rights
 
 export default function Company() {
+    useRedirectOnLargeScreen();
+
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
