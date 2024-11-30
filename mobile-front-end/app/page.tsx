@@ -22,7 +22,7 @@ export default function Home() {
 
   useEffect(() => {
     if (isConnected) {
-      router.push("/dashboard");
+      router.push("/home");
     }
   }, [isConnected]);
 

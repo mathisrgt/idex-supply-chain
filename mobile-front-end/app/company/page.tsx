@@ -12,21 +12,23 @@ import NavBar from "@/components/NavBar";
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
-import { Plus } from "lucide-react";
+import { ArrowRightSquare, Plus } from "lucide-react";
 import ActionBar from "@/components/ActionBar";
-import FlowList from "@/components/lists/FlowList";
+import AccountList from "@/components/lists/AccountList";
 
-export default function Dashboard() {
-    const router = useRouter();
 
-    const { address, isConnected } = useAccount();
-    const { disconnect } = useDisconnect();
+// Features: 
+// - Company caracteristics
+// - Actuals users and their rights
+// - Add new users
+// - Update rights
 
+export default function Company() {
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
-                <h1>Dashboard</h1>
-                <FlowList />
+                <h1>Company</h1>
+                <AccountList />
             </main>
             <NavBar />
         </>

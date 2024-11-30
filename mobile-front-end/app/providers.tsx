@@ -16,30 +16,30 @@ import { smartAccountConnector } from "@cometh/connect-sdk-4337";
 // Env
 import { bundlerUrl, comethApiKey, paymasterUrl, rpcUrl } from "@/environment/smart_account";
 
-const queryClient = new QueryClient();
-
-const connector = smartAccountConnector({
-    chain: polygonAmoy,
-    apiKey: comethApiKey,
-    bundlerUrl,
-    rpcUrl,
-    paymasterUrl
-});
-
-const web3Config = createConfig({
-    chains: [polygonAmoy],
-    connectors: [connector],
-    transports: {
-        [polygonAmoy.id]: http(),
-    },
-    // ssr: true, // To avoid client - server rendering errors
-});
-
 interface ProvidersProps {
     children: ReactNode;
 }
 
 export const Providers: React.FC<ProvidersProps> = ({ children }) => {
+    const queryClient = new QueryClient();
+
+    const connector = smartAccountConnector({
+        chain: polygonAmoy,
+        apiKey: comethApiKey,
+        bundlerUrl,
+        rpcUrl,
+        paymasterUrl
+    });
+
+    const web3Config = createConfig({
+        chains: [polygonAmoy],
+        connectors: [connector],
+        transports: {
+            [polygonAmoy.id]: http(),
+        },
+        // ssr: true, // To avoid client - server rendering errors
+    });
+
     return <WagmiProvider config={web3Config}>
         <QueryClientProvider client={queryClient}>
             <NextUIProvider>

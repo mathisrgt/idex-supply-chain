@@ -3,7 +3,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Idex Supply Chain",
+  title: "WoodTracker",
   description: "Wood supply chain traceability and complience dApp for IDEX energy company.",
 };
 

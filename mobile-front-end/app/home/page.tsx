@@ -13,20 +13,26 @@ import NavBar from "@/components/NavBar";
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Plus } from "lucide-react";
-import ActionBar from "@/components/ActionBar";
-import FlowList from "@/components/lists/FlowList";
+import { HomeChart } from "@/components/charts/homeChart";
+import { useEffect } from "react";
 
-export default function Dashboard() {
+export default function Home() {
     const router = useRouter();
 
     const { address, isConnected } = useAccount();
-    const { disconnect } = useDisconnect();
 
+    // useEffect(() => {
+    //     if (!isConnected) {
+    //         router.push('/');
+    //     }
+    // }, []);
+
+    // TODO If not connected, loading component
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
-                <h1>Dashboard</h1>
-                <FlowList />
+                <h1 className="text-xl">Good morning 👋</h1>
+                <HomeChart />
             </main>
             <NavBar />
         </>
