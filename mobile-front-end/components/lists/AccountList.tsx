@@ -12,34 +12,15 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Butto
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Plus, Search } from "lucide-react";
+import AccountCard from "../cards/AccountCard";
 
 export default function AccountList() {
 
     return (
         <>
-            <div className="flex">
-                <Card className="w-1/2">
-                    <CardHeader className="flex gap-3">
-                        <div className="flex flex-col">
-                            <p className="text-md">NextUI</p>
-                            <p className="text-small text-default-500">nextui.org</p>
-                        </div>
-                    </CardHeader>
-                    <CardBody>
-                        <p>Make beautiful websites regardless of your design experience.</p>
-                    </CardBody>
-                </Card>
-                <Card className="w-1/2">
-                    <CardHeader className="flex gap-3">
-                        <div className="flex flex-col">
-                            <p className="text-md">NextUI</p>
-                            <p className="text-small text-default-500">nextui.org</p>
-                        </div>
-                    </CardHeader>
-                    <CardBody>
-                        <p>Make beautiful websites regardless of your design experience.</p>
-                    </CardBody>
-                </Card>
+            <div className="flex gap-4">
+                <AccountCard />
+                <AccountCard />
             </div>
         </>
     );

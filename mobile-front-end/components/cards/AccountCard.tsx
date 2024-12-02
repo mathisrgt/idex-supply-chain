@@ -5,16 +5,15 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, Input, Modal, useDisclosure, ModalBody, ModalContent, ModalFooter, ModalHeader, Badge, Chip } from "@nextui-org/react";
 
 // UX (Components)
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 
-
-export default function FlowList() {
+export default function AccountCard() {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
@@ -56,9 +55,6 @@ export default function FlowList() {
                                 </p>
                             </ModalBody>
                             <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
-                                    Close
-                                </Button>
                                 <Button color="primary" onPress={onClose}>
                                     Action
                                 </Button>
@@ -68,29 +64,22 @@ export default function FlowList() {
                 </ModalContent>
             </Modal>
 
-            <Tabs aria-label="Options">
-                <Tab key="manage" title="Manage">
-                    <div onClick={onOpen}>
-                        <Card className="max-w-[400px]">
-                            <CardHeader className="flex gap-3">
-                                <div className="flex flex-col">
-                                    <p className="text-md">NextUI</p>
-                                    <p className="text-small text-default-500">nextui.org</p>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <p>Make beautiful websites regardless of your design experience.</p>
-                            </CardBody>
-                        </Card>
-                    </div>
-                </Tab>
-                <Tab key="company" title="Company">
-                </Tab>
-                <Tab key="history" title="History">
-                </Tab>
-                <Tab key="all" title="All">
-                </Tab>
-            </Tabs>
+            <div onClick={onOpen} className="flex-1">
+                <Card>
+                    <CardBody>
+                        <div className="flex flex-col gap-1">
+                            <div>
+                                <p className="text-md">Name</p>
+                                <p className="text-small text-default-500">Address</p>
+                            </div>
+                            <div className="flex gap-1">
+                                <Chip size="sm">Admin</Chip>
+                                <Chip size="sm">Extractor</Chip>
+                            </div>
+                        </div>
+                    </CardBody>
+                </Card>
+            </div>
         </>
     );
 }

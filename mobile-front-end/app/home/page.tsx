@@ -6,6 +6,13 @@ import { useRouter } from "next/navigation";
 
 // UI
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button } from "@nextui-org/react";
+import {
+    Carousel,
+    CarouselContent,
+    CarouselItem,
+    CarouselNext,
+    CarouselPrevious,
+} from "@/components/ui/carousel"
 
 // UX (Components)
 import NavBar from "@/components/bars/NavBar";
@@ -35,7 +42,17 @@ export default function Home() {
         <>
             <main className="p-4 flex flex-col gap-4">
                 <h1 className="text-xl">Home</h1>
-                <HomeChart />
+                <Carousel className="flex flex-col w-full gap-2">
+                    <h1>Activity</h1>
+                    <CarouselContent>
+                        <CarouselItem>
+                            <HomeChart />
+                        </CarouselItem>
+                        <CarouselItem>
+                            <HomeChart />
+                        </CarouselItem>
+                    </CarouselContent>
+                </Carousel>
                 <TransactionPreviewList />
             </main>
             <NavBar />

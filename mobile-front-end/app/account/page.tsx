@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Input } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 
 // UX (Components)
@@ -24,7 +24,9 @@ export default function Account() {
     const { disconnect } = useDisconnect();
 
     return (
-        <main className="p-4">
+        <main className="p-4 flex flex-col gap-4">
+            <h1>Profile</h1>
+            <Input placeholder={address} disabled />
             <Button
                 color="danger"
                 className="w-full"

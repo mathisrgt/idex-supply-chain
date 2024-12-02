@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Home, User, LayoutGrid, Factory } from 'lucide-react';
+import { Home, User, LayoutGrid, Factory, LayoutList, Building, Building2 } from 'lucide-react';
 import { Badge } from "@nextui-org/react";
 
 export default function BottomNavBar() {
@@ -11,13 +11,13 @@ export default function BottomNavBar() {
             </Link>
             <Badge content="1" color="danger" className="flex flex-col">
                 <Link href="/dashboard" className="flex flex-col items-center">
-                    <LayoutGrid className="text-gray-600" />
+                    <LayoutList className="text-gray-600" />
                     <span className="text-xs text-gray-600">Dashboard</span>
                 </Link>
             </Badge>
             <Badge content="1" color="danger" className="flex flex-col">
                 <Link href="/company" className="flex flex-col items-center">
-                    <Factory className="text-gray-600" />
+                    <Building2 className="text-gray-600" />
                     <span className="text-xs text-gray-600">Company</span>
                 </Link>
             </Badge>
