@@ -11,8 +11,10 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Butto
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
-import { Plus, Truck, Weight } from "lucide-react";
+import { Calendar, CalendarClock, Edit2, GitCommit, MapPinHouse, Plus, Truck, Weight } from "lucide-react";
 import { Hex } from "viem";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
 interface FlowCardProps {
     id: number;
@@ -54,11 +56,55 @@ export default function FlowCard(props: FlowCardProps) {
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1">WoodFlow #{props.id}</ModalHeader>
-                            <ModalBody>
-                                <div>
-                                    <Weight />
-                                    <p>45 kg</p>
+                            <ModalBody className="flex gap-4 pt-0">
+
+                                <div className="flex flex-col gap-3">
+                                    <div className="flex gap-2 items-center">
+                                        <CalendarClock size={20} />
+                                        <p>08/12/2024</p>
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <GitCommit size={20} />
+                                        <p>Shipping</p>
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <Weight size={20} />
+                                        <p>45 kg</p>
+                                    </div>
+                                    <div className="flex gap-2 items-center">
+                                        <MapPinHouse size={20} />
+                                        <p>Orléans, France</p>
+                                    </div>
                                 </div>
+                                <Accordion type="single" collapsible className="w-full">
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>Last Updates</AccordionTrigger>
+                                        <AccordionContent>
+                                            <div className="flex flex-col gap-3">
+                                                <Table>
+                                                    <TableBody>
+                                                        <TableRow key="1">
+                                                            <TableCell>08/12/2024</TableCell>
+                                                            <TableCell>New owner</TableCell>
+                                                        </TableRow>
+                                                        <TableRow key="2">
+                                                            <TableCell>05/12/2024</TableCell>
+                                                            <TableCell>Transport</TableCell>
+                                                        </TableRow>
+                                                        <TableRow key="3">
+                                                            <TableCell>05/12/2024</TableCell>
+                                                            <TableCell>New owner</TableCell>
+                                                        </TableRow>
+                                                        <TableRow key="4">
+                                                            <TableCell>04/12/2024</TableCell>
+                                                            <TableCell>Production</TableCell>
+                                                        </TableRow>
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
                             </ModalBody>
                             <ModalFooter className="flex justify-between">
                                 <Button color="primary" variant="light" onPress={onClose}>

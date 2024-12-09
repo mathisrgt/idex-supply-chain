@@ -23,6 +23,7 @@ import { HomeChart } from "@/components/charts/homeChart";
 import { useEffect } from "react";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import TransactionPreviewList from "@/components/lists/TransactionPreviewList";
+import PageTitle, { PageSecondaryTitle } from "@/components/text/PageTitle";
 
 export default function Home() {
     useRedirectOnLargeScreen();
@@ -40,9 +41,9 @@ export default function Home() {
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
-                <h1 className="text-xl">Home</h1>
+                <PageTitle text="Home" />
                 <Carousel className="flex flex-col w-full gap-2">
-                    <h1>Activity</h1>
+                    <PageSecondaryTitle text="Activity" />
                     <CarouselContent>
                         <CarouselItem>
                             <HomeChart />

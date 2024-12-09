@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Button } from "@nextui-org/react";
 import { ArrowRight, ArrowRightIcon } from "lucide-react";
+import { PageSecondaryTitle } from "../text/PageTitle";
 
 // UX (Components)
 
@@ -17,7 +18,7 @@ import { ArrowRight, ArrowRightIcon } from "lucide-react";
 export default function TransactionPreviewList() {
     return (
         <>
-            <h1>Last transactions</h1>
+            <PageSecondaryTitle text="Last transactions" />
             <div className="flex flex-col gap-2">
                 <Card className="flex-1">
                     <CardHeader></CardHeader>

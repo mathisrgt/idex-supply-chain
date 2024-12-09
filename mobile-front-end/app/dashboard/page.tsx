@@ -16,6 +16,7 @@ import { Plus } from "lucide-react";
 import ActionBar from "@/components/bars/ActionBar";
 import FlowList from "@/components/lists/FlowList";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
+import PageTitle from "@/components/text/PageTitle";
 
 export default function Dashboard() {
     useRedirectOnLargeScreen();
@@ -28,7 +29,7 @@ export default function Dashboard() {
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
-                <h1>Dashboard</h1>
+                <PageTitle text="Dashboard" />
                 <FlowList />
             </main>
             <NavBar />

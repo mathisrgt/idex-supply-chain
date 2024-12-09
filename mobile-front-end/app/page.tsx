@@ -44,10 +44,9 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center justify-between min-h-screen w-full p-8 text-center">
-        <h1 className="text-2xl text-white mt-24 z-10">WoodTracker</h1>
+        <h1 className="text-2xl text-white mt-24 z-10 title">WoodTracker</h1>
         <Button
-          onClick={connectWithWagmi}
-          className="w-full" size="lg">
+          onClick={connectWithWagmi} className="w-full" color="primary" size="lg">
           Start
         </Button>
       </div>

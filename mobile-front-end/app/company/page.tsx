@@ -17,6 +17,7 @@ import ActionBar from "@/components/bars/ActionBar";
 import AccountList from "@/components/lists/AccountList";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import AccountSearchBar from "@/components/bars/AccountSearchBar";
+import PageTitle from "@/components/text/PageTitle";
 
 
 // Features: 
@@ -31,7 +32,7 @@ export default function Company() {
     return (
         <>
             <main className="p-4 flex flex-col gap-4">
-                <h1>Company</h1>
+                <PageTitle text="Company" />
                 <AccountSearchBar />
                 <AccountList />
             </main>
