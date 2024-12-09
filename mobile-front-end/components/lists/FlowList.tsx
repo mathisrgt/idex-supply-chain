@@ -5,90 +5,38 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Input } from "@nextui-org/react";
 
 // UX (Components)
 
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
-import { Plus } from "lucide-react";
-
+import { Plus, Search } from "lucide-react";
+import FlowCard from "../cards/FlowCard";
 
 export default function FlowList() {
-    const { isOpen, onOpen, onOpenChange } = useDisclosure();
-
     return (
         <>
-            <Modal
-                backdrop="opaque"
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                motionProps={{
-                    variants: {
-                        enter: {
-                            y: 0,
-                            opacity: 1,
-                            transition: {
-                                duration: 0.3,
-                                ease: "easeOut",
-                            },
-                        },
-                        exit: {
-                            y: -20,
-                            opacity: 0,
-                            transition: {
-                                duration: 0.2,
-                                ease: "easeIn",
-                            },
-                        },
-                    }
-                }}
-            >
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-                            <ModalBody>
-                                <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                    Nullam pulvinar risus non risus hendrerit venenatis.
-                                    Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                                </p>
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button color="danger" variant="light" onPress={onClose}>
-                                    Close
-                                </Button>
-                                <Button color="primary" onPress={onClose}>
-                                    Action
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-
+            <Input
+                placeholder="Search..."
+                type="text"
+                endContent={
+                    <Search className="text-default-400 pointer-events-none flex-shrink-0" size={20} />
+                }
+                className="flex justify-between w-full"
+            />
             <Tabs aria-label="Options">
-                <Tab key="manage" title="Manage">
-                    <div onClick={onOpen}>
-                        <Card className="max-w-[400px]">
-                            <CardHeader className="flex gap-3">
-                                <div className="flex flex-col">
-                                    <p className="text-md">NextUI</p>
-                                    <p className="text-small text-default-500">nextui.org</p>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <p>Make beautiful websites regardless of your design experience.</p>
-                            </CardBody>
-                        </Card>
-                    </div>
+                <Tab key="current" title="Current">
+                    <FlowCard id={7276} />
                 </Tab>
-                <Tab key="company" title="Company">
+                <Tab key="history" title="History" className="flex flex-col gap-4">
+                    <FlowCard id={2839} />
+                    <FlowCard id={1934} />
                 </Tab>
-                <Tab key="history" title="History">
-                </Tab>
-                <Tab key="all" title="All">
+                <Tab key="all" title="All" className="flex flex-col gap-4">
+                    <FlowCard id={7276} />
+                    <FlowCard id={2839} />
+                    <FlowCard id={1934} />
                 </Tab>
             </Tabs>
         </>
