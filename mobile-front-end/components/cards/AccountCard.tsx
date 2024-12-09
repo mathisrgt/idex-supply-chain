@@ -26,7 +26,8 @@ export default function AccountCard() {
     return (
         <>
             <Modal
-                backdrop="opaque"
+                backdrop="blur"
+                placement="center"
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
                 motionProps={{
@@ -62,6 +63,14 @@ export default function AccountCard() {
                                     type="text"
                                     disabled
                                     className="flex justify-between w-full"
+                                    classNames={{
+                                        label: [
+                                            "!text-default-500",
+                                        ],
+                                        input: [
+                                            "!text-default-500",
+                                        ],
+                                    }}
                                 />
                                 <Input
                                     label="Address"
@@ -73,6 +82,14 @@ export default function AccountCard() {
                                         <Copy className="text-default-400 pointer-events-none flex-shrink-0" size={20} />
                                     }
                                     className="flex justify-between w-full"
+                                    classNames={{
+                                        label: [
+                                            "!text-default-500",
+                                        ],
+                                        input: [
+                                            "!text-default-500",
+                                        ],
+                                    }}
                                 />
                                 <Select
                                     label="Role"
@@ -83,8 +100,20 @@ export default function AccountCard() {
                                     <SelectItem key={'admin'}>
                                         Admin
                                     </SelectItem>
-                                    <SelectItem key={'other'}>
-                                        Other
+                                    <SelectItem key={'extractor'}>
+                                        Extractor
+                                    </SelectItem>
+                                    <SelectItem key={'transporter'}>
+                                        Transporter
+                                    </SelectItem>
+                                    <SelectItem key={'warehouse'}>
+                                        Warehouse
+                                    </SelectItem>
+                                    <SelectItem key={'manufacturer'}>
+                                        Manufacturer
+                                    </SelectItem>
+                                    <SelectItem key={'controller'}>
+                                        Reader
                                     </SelectItem>
                                 </Select>
                             </ModalBody>

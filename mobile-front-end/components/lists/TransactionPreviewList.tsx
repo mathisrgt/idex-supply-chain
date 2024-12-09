@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Button } from "@nextui-org/react";
 import { ArrowRight, ArrowRightIcon } from "lucide-react";
 import { PageSecondaryTitle } from "../text/PageTitle";
+import TransactionCard from "../cards/TransactionCard";
 
 // UX (Components)
 
@@ -20,22 +21,8 @@ export default function TransactionPreviewList() {
         <>
             <PageSecondaryTitle text="Last transactions" />
             <div className="flex flex-col gap-2">
-                <Card className="flex-1">
-                    <CardHeader></CardHeader>
-                    <CardContent>
-                        <p>Make beautiful websites regardless of your design experience.</p>
-                    </CardContent>
-                </Card>
-                <Card className="flex-1">
-                    <CardHeader></CardHeader>
-                    <CardContent>
-                        <p>Make beautiful websites regardless of your design experience.</p>
-                    </CardContent>
-                </Card>
-                <Button color="primary">
-                    All transactions
-                    <ArrowRight size={15} />
-                </Button>
+                <TransactionCard hash="0x1a5ed...9e5bd" />
+                <TransactionCard hash="0x9d3nz...7j5zs" />
             </div>
         </>
     );
