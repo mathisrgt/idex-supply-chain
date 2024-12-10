@@ -23,7 +23,7 @@ export default function AddAccountButton() {
 
     return (
         <>
-            <Button onClick={openModal}>
+            <Button onClick={openModal} color="secondary">
                 <UserRoundPlus size={17} />
             </Button>
 
@@ -43,21 +43,34 @@ export default function AddAccountButton() {
                         <Select
                             label="Select a role"
                             fullWidth
+
                         >
                             <SelectItem key={'admin'}>
                                 Admin
                             </SelectItem>
-                            <SelectItem key={'other'}>
-                                Other
+                            <SelectItem key={'extractor'}>
+                                Extractor
+                            </SelectItem>
+                            <SelectItem key={'transporter'}>
+                                Transporter
+                            </SelectItem>
+                            <SelectItem key={'warehouse'}>
+                                Warehouse
+                            </SelectItem>
+                            <SelectItem key={'manufacturer'}>
+                                Manufacturer
+                            </SelectItem>
+                            <SelectItem key={'controller'}>
+                                Reader
                             </SelectItem>
                         </Select>
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button onClick={closeModal}>
+                        <Button onClick={closeModal} variant="light">
                             Cancel
                         </Button>
-                        <Button onClick={handleSubmit}>Submit</Button>
+                        <Button onClick={handleSubmit} color="primary">Submit</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
