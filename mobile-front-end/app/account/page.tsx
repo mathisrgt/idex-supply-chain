@@ -16,7 +16,8 @@ import { useAccount, useDisconnect } from 'wagmi';
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import PageTitle from "@/components/text/PageTitle";
 import { Copy } from "lucide-react";
-import { fetchAllWoodRecordDetails } from "@/services/woodRecords";
+import { fetchAllWoodRecordDetails } from "@/services/woodRecord";
+import { fetchAllUserRoles } from "@/services/role";
 
 export default function Account() {
     useRedirectOnLargeScreen();
@@ -80,6 +81,16 @@ export default function Account() {
                 }}
             >
                 Test call fetchAllWoodRecordDetails
+            </Button>
+
+            <Button
+                color="default"
+                className="w-full"
+                onClick={() => {
+                    fetchAllUserRoles(address);
+                }}
+            >
+                Test call fetchAllUserRoles
             </Button>
 
             <NavBar />

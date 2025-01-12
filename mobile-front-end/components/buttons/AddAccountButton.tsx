@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Select, SelectItem } from "@nextui-org/react";
 import { UserRoundPlus } from "lucide-react";
+import { Role } from "@/types/role";
 
 export default function AddAccountButton() {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function AddAccountButton() {
     };
 
     const handleSubmit = () => {
-        console.log("Public Address:", publicAddress);
+        // TODO
         closeModal();
     };
 
@@ -45,24 +46,11 @@ export default function AddAccountButton() {
                             fullWidth
 
                         >
-                            <SelectItem key={'admin'}>
-                                Admin
-                            </SelectItem>
-                            <SelectItem key={'extractor'}>
-                                Extractor
-                            </SelectItem>
-                            <SelectItem key={'transporter'}>
-                                Transporter
-                            </SelectItem>
-                            <SelectItem key={'warehouse'}>
-                                Warehouse
-                            </SelectItem>
-                            <SelectItem key={'manufacturer'}>
-                                Manufacturer
-                            </SelectItem>
-                            <SelectItem key={'controller'}>
-                                Reader
-                            </SelectItem>
+                            {Object.keys(Role).filter((key) => isNaN(Number(key)) && key !== "None").map((role) => (
+                                <SelectItem key={role}>
+                                    {role}
+                                </SelectItem>
+                            ))}
                         </Select>
                     </ModalBody>
 
