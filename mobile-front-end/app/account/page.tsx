@@ -18,6 +18,7 @@ import PageTitle from "@/components/text/PageTitle";
 import { Copy } from "lucide-react";
 import { fetchAllWoodRecordDetails } from "@/services/woodRecord";
 import { fetchAllUserRoles } from "@/services/role";
+import { fetchAllProductionSiteDetails } from "@/services/productionSites";
 
 export default function Account() {
     useRedirectOnLargeScreen();
@@ -91,6 +92,16 @@ export default function Account() {
                 }}
             >
                 Test call fetchAllUserRoles
+            </Button>
+
+            <Button
+                color="default"
+                className="w-full"
+                onClick={() => {
+                    fetchAllProductionSiteDetails(address);
+                }}
+            >
+                Test call fetchAllProductionSiteDetails
             </Button>
 
             <NavBar />
