@@ -6,8 +6,8 @@ import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter
 import { UserRoundPlus } from "lucide-react";
 
 export default function AddAccountButton() {
-    const [isModalOpen, setModalOpen] = useState(false); // State to control modal visibility
-    const [publicAddress, setPublicAddress] = useState(""); // State to store input value
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [publicAddress, setPublicAddress] = useState("");
 
     const openModal = () => setModalOpen(true);
 

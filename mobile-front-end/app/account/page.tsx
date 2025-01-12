@@ -16,6 +16,7 @@ import { useAccount, useDisconnect } from 'wagmi';
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import PageTitle from "@/components/text/PageTitle";
 import { Copy } from "lucide-react";
+import { fetchAllWoodRecordDetails } from "@/services/woodRecords";
 
 export default function Account() {
     useRedirectOnLargeScreen();
@@ -25,13 +26,16 @@ export default function Account() {
     const { address, isConnected } = useAccount();
     const { disconnect } = useDisconnect();
 
+    if (!isConnected || !address)
+        throw Error('Wallet not connected');
+
     return (
         <main className="p-4 flex flex-col gap-4">
             <PageTitle text="Profile" />
             <Input
                 label="Address"
                 labelPlacement="inside"
-                value="1a2b3c...d4e5f6"
+                value={address}
                 type="text"
                 disabled
                 endContent={
@@ -57,7 +61,28 @@ export default function Account() {
             >
                 Disconnect
             </Button>
+
+            {/* <Button
+                color="default"
+                className="w-full"
+                onClick={() => {
+                    fetchWoodRecordDetails(address, 1);
+                }}
+            >
+                Test call Wood Record #1
+            </Button> */}
+
+            <Button
+                color="default"
+                className="w-full"
+                onClick={() => {
+                    fetchAllWoodRecordDetails(address);
+                }}
+            >
+                Test call fetchAllWoodRecordDetails
+            </Button>
+
             <NavBar />
-        </main>
+        </main >
     );
 }

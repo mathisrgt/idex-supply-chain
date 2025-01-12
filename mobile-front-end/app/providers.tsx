@@ -14,7 +14,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { smartAccountConnector } from "@cometh/connect-sdk-4337";
 
 // Env
-import { bundlerUrl, comethApiKey, paymasterUrl, rpcUrl } from "@/environment/smart_account";
+import { bundlerUrl, comethApiKey, paymasterUrl } from "@/environment/blockchain/account_abstraction";
+import { rpcUrl } from "@/environment/blockchain/rpc";
 
 interface ProvidersProps {
     children: ReactNode;
