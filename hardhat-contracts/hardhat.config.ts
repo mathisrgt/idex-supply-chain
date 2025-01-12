@@ -1,26 +1,32 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import * as dotenv from "dotenv";
+import { polygonScanApiKey, privateKey } from "./environment/key";
+import { holeskyRpcUrl, polygonAmoyRpcUrl } from "./environment/rpc";
 
-// Load environment variables from .env file
 dotenv.config();
-
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
 const config: HardhatUserConfig = {
   solidity: "0.8.19",
   networks: {
     holesky: {
-      url: process.env.HOLESKY_RPC_URL,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+      url: holeskyRpcUrl,
+      accounts: [privateKey],
     },
     polygon_amoy: {
-      url: process.env.POL_AMOY_RPC_URL,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
+      url: polygonAmoyRpcUrl,
+      accounts: [privateKey],
+    },
+    berachainBartio: {
+      url: process.env.BERACHAIN_BARTIO_RPC_URL,
+      accounts: [privateKey],
     },
   },
   etherscan: {
-    apiKey: process.env.POLYGONSCAN_API_KEY,
+    apiKey: {
+      polygonAmoy: polygonScanApiKey,
+      berachainBartio: "berachainBartio",
+    },
     customChains: [
       {
         network: "polygonAmoy",
@@ -29,8 +35,16 @@ const config: HardhatUserConfig = {
           apiURL: "https://api-amoy.polygonscan.com/api",
           browserURL: "https://amoy.polygonscan.com"
         },
-      }
-    ]
+      },
+      {
+        network: "berachainBartio",
+        chainId: 80084,
+        urls: {
+          apiURL: "https://api.routescan.io/v2/network/testnet/evm/80084/etherscan",
+          browserURL: "https://bartio.beratrail.io/"
+        },
+      },
+    ],
   },
 };
 
