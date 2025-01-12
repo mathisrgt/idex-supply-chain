@@ -28,10 +28,12 @@ contract WoodTracker {
         int256 longitude; // Longitude in degrees (e.g., -12345678 for -12.345678°)
     }
 
+    uint256 private woodRecordCounter;
+
     /// @notice Struct to represent a wood record.
     struct WoodRecord {
         uint256 id;
-        string origin;
+        GeoLocation origin;
         uint256 weightInKg;
         string woodType;
         string cutType;
@@ -89,6 +91,14 @@ contract WoodTracker {
         _;
     }
 
+    modifier isExtractor(address account) {
+        require(
+            roles[account] == Role.Extractor, // Ensure the role is Extractor
+            "Error: Caller is not an extractor."
+        );
+        _;
+    }
+
     /// @notice View functions
 
     /// @notice Access a wood record (only registered roles can access).
@@ -136,21 +146,16 @@ contract WoodTracker {
         emit RoleAssigned(user);
     }
 
-    /// @notice Add a production site and automatically assign the Extractor role to its owner.
-    function addProductionSite(
-        address siteAddress,
+    /// @notice Create a production site and automatically assign the Extractor role to its owner.
+    function createProductionSite(
         string memory name,
         uint256 capacity,
         string[] memory permit,
         string[] memory certificates,
         int256 latitude,
         int256 longitude
-    ) external hasRole(msg.sender) {
-        require(
-            roles[msg.sender] == Role.Admin,
-            "Error: Caller is not an admin."
-        );
-        require(siteAddress != address(0), "Error: Invalid site address.");
+    ) external isExtractor(msg.sender) {
+        require(msg.sender != address(0), "Error: Invalid site address.");
         require(bytes(name).length > 0, "Error: Name cannot be empty.");
         require(
             latitude >= -90000000 && latitude <= 90000000,
@@ -162,13 +167,11 @@ contract WoodTracker {
         );
 
         require(
-            bytes(productionSites[siteAddress].name).length == 0,
-            "Error: Production site already exists."
+            bytes(productionSites[msg.sender].name).length == 0,
+            "Error: A production site is already linked to this address. Only 1 production site per address is allowed."
         );
 
-        roles[siteAddress] = Role.Extractor;
-
-        productionSites[siteAddress] = ProductionSite({
+        productionSites[msg.sender] = ProductionSite({
             name: name,
             capacity: capacity,
             permit: permit,
@@ -176,80 +179,86 @@ contract WoodTracker {
             location: GeoLocation(latitude, longitude)
         });
 
-        emit RoleAssigned(siteAddress);
+        emit RoleAssigned(msg.sender);
     }
 
     /// @notice Update details of a production site (only the owner of the production site can update).
-    /// @param siteAddress The address of the production site to update.
     /// @param name (Optional) The new name for the production site. Use empty string to skip updating.
     /// @param capacity (Optional) The new capacity of the production site. Use `0` to skip updating.
-    /// @param certificates (Optional) The updated list of certificates. Use empty array to skip updating.
     /// @param latitude (Optional) The updated latitude. Use `int256(-1)` to skip updating.
     /// @param longitude (Optional) The updated longitude. Use `int256(-1)` to skip updating.
     function updateProductionSite(
-        address siteAddress,
         string memory name,
         uint256 capacity,
-        string[] memory certificates,
         int256 latitude,
         int256 longitude
-    ) external {
+    ) external isExtractor(msg.sender) {
         require(
-            bytes(productionSites[siteAddress].name).length > 0,
+            bytes(productionSites[msg.sender].name).length > 0,
             "Error: Production site does not exist."
         );
         require(
-            msg.sender == siteAddress,
-            "Error: Only the owner of the production site can update it."
+            latitude >= -90000000 && latitude <= 90000000,
+            "Error: Invalid latitude."
+        );
+        require(
+            longitude >= -180000000 && longitude <= 180000000,
+            "Error: Invalid longitude."
         );
 
-        ProductionSite storage site = productionSites[siteAddress];
+        ProductionSite storage site = productionSites[msg.sender];
 
-        // Update name if provided
-        if (bytes(name).length > 0) {
-            site.name = name;
-        }
+        site.name = name;
+        site.capacity = capacity;
+        site.location = GeoLocation(latitude, longitude);
 
-        // Update capacity if provided
-        if (capacity > 0) {
-            site.capacity = capacity;
-        }
+        emit ProductionSiteUpdated(msg.sender);
+    }
 
-        // Update certificates if provided
-        if (certificates.length > 0) {
-            site.certificates = certificates;
-        }
+    function addPermit(string memory permit) external isExtractor(msg.sender) {
+        ProductionSite storage site = productionSites[msg.sender];
 
-        // Update location if provided
-        if (latitude != int256(-1) && longitude != int256(-1)) {
-            require(
-                latitude >= -90000000 && latitude <= 90000000,
-                "Error: Invalid latitude."
-            );
-            require(
-                longitude >= -180000000 && longitude <= 180000000,
-                "Error: Invalid longitude."
-            );
-            site.location = GeoLocation(latitude, longitude);
-        }
+        require(
+            bytes(site.name).length > 0,
+            "Error: Caller does not have initialized his production site."
+        );
+        require(
+            bytes(permit).length > 0,
+            "Error: Permit must be a non-empty string."
+        );
 
-        emit ProductionSiteUpdated(siteAddress);
+        site.permit.push(permit);
+
+        emit ProductionSiteUpdated(msg.sender);
+    }
+
+    function addCertificate(
+        string memory certificate
+    ) external isExtractor(msg.sender) {
+        ProductionSite storage site = productionSites[msg.sender];
+
+        require(
+            bytes(site.name).length > 0,
+            "Error: Caller does not have initialized his production site."
+        );
+        require(
+            bytes(certificate).length > 0,
+            "Error: Certificate must be a non-empty string."
+        );
+
+        site.certificates.push(certificate);
+
+        emit ProductionSiteUpdated(msg.sender);
     }
 
     /// @notice Create a new wood record.
-    /// @param id The unique identifier for the wood record.
-    /// @param origin The origin of the wood.
     /// @param weightInKg The weight of the wood in kilograms.
     /// @param woodType The type of wood.
     /// @param cutType The type of cut.
-    /// @param productionSite The address of the associated production site.
     function createWoodRecord(
-        uint256 id,
-        string memory origin,
         uint256 weightInKg,
         string memory woodType,
-        string memory cutType,
-        address productionSite
+        string memory cutType
     ) external hasRole(msg.sender) {
         require(
             roles[msg.sender] == Role.Extractor,
@@ -257,32 +266,30 @@ contract WoodTracker {
         );
         require(weightInKg > 0, "Error: Weight must be greater than zero.");
         require(
-            bytes(productionSites[productionSite].name).length > 0,
-            "Error: Production site does not exist."
-        );
-        require(
-            woodRecords[id].id == 0,
-            "Error: A wood record with this ID already exists."
+            bytes(productionSites[msg.sender].name).length > 0,
+            "Error: Production site have not been initialized."
         );
 
-        woodRecords[id] = WoodRecord({
-            id: id,
-            origin: origin,
+        woodRecords[woodRecordCounter] = WoodRecord({
+            id: woodRecordCounter,
+            origin: , // TODO use the production site location as the origin
             weightInKg: weightInKg,
             woodType: woodType,
             cutType: cutType,
             state: WoodState.Harvested,
             currentResponsible: msg.sender,
-            productionSite: productionSite
+            productionSite: msg.sender
         });
 
-        emit WoodRecordCreated(id);
+        emit WoodRecordCreated(woodRecordCounter);
+
+        woodRecordCounter++;
     }
 
     /// @notice Update a wood record.
     /// @param id The unique identifier of the wood record.
     /// @param newState The new state of the wood.
-    /// @param newWeightInKg (Optional) The updated weight in kilograms.
+    /// @param newWeightInKg The updated weight in kilograms.
     function updateWoodRecord(
         uint256 id,
         WoodState newState,
@@ -296,13 +303,8 @@ contract WoodTracker {
 
         WoodRecord storage record = woodRecords[id];
 
-        // Update the state
         record.state = newState;
-
-        // Optional: Update the weight if provided
-        if (newWeightInKg > 0) {
-            record.weightInKg = newWeightInKg;
-        }
+        record.weightInKg = newWeightInKg;
 
         emit WoodRecordDataUpdated(id);
     }
