@@ -61,6 +61,7 @@ contract WoodTracker {
     event ContractOwnerUpdated(address indexed user);
 
     event RoleAssigned(address indexed user);
+    event UserRemoved(address indexed user);
 
     event ProductionSiteCreated(address indexed productionSite);
     event ProductionSiteUpdated(address indexed productionSite);
@@ -91,9 +92,14 @@ contract WoodTracker {
         _;
     }
 
+    modifier isAdmin(address account) {
+        require(roles[account] == Role.Admin, "Error: Caller is not an Admin.");
+        _;
+    }
+
     modifier isExtractor(address account) {
         require(
-            roles[account] == Role.Extractor, // Ensure the role is Extractor
+            roles[account] == Role.Extractor,
             "Error: Caller is not an extractor."
         );
         _;
@@ -124,26 +130,40 @@ contract WoodTracker {
 
     /// @notice Write functions
 
-    /// @notice Assign the Admin role (only contract owner can assign).
-    function assignAdminRole(address user) external onlyOwner {
-        require(user != address(0), "Error: Invalid address.");
-
-        roles[user] = Role.Admin;
-        emit RoleAssigned(user);
-    }
-
-    /// @notice Assign a non-admin role (only Admins can assign).
-    function assignRole(address user, Role role) external hasRole(msg.sender) {
-        require(
-            roles[msg.sender] == Role.Admin,
-            "Error: Caller is not an admin."
-        );
+    /// @notice Assign a role (only Admins can assign).
+    function assignRole(address user, Role role) external isAdmin(msg.sender) {
         require(user != address(0), "Error: Invalid address.");
         require(role != Role.None, "Error: Cannot assign 'None' as a role.");
+        if (role == Role.Admin) {
+            require(
+                msg.sender == owner,
+                "Error: Only the contract owner can assign or remove the Admin role."
+            );
+        }
 
         roles[user] = role;
 
         emit RoleAssigned(user);
+    }
+
+    function removeUser(address user) external isAdmin(msg.sender) {
+        require(user != address(0), "Error: Invalid address.");
+        require(
+            user != msg.sender,
+            "Error: You cannot remove your own account. Another admin must perform this action."
+        );
+        require(
+            user != owner,
+            "Error: The contract owner cannot be removed. Change ownership first."
+        );
+        require(
+            roles[user] != Role.None,
+            "Error: The user does not have an assigned role."
+        );
+
+        roles[user] = Role.None;
+
+        emit UserRemoved(user);
     }
 
     /// @notice Create a production site and automatically assign the Extractor role to its owner.
@@ -179,38 +199,25 @@ contract WoodTracker {
             location: GeoLocation(latitude, longitude)
         });
 
-        emit RoleAssigned(msg.sender);
+        emit ProductionSiteCreated(msg.sender);
     }
 
     /// @notice Update details of a production site (only the owner of the production site can update).
     /// @param name (Optional) The new name for the production site. Use empty string to skip updating.
     /// @param capacity (Optional) The new capacity of the production site. Use `0` to skip updating.
-    /// @param latitude (Optional) The updated latitude. Use `int256(-1)` to skip updating.
-    /// @param longitude (Optional) The updated longitude. Use `int256(-1)` to skip updating.
     function updateProductionSite(
         string memory name,
-        uint256 capacity,
-        int256 latitude,
-        int256 longitude
+        uint256 capacity
     ) external isExtractor(msg.sender) {
         require(
             bytes(productionSites[msg.sender].name).length > 0,
             "Error: Production site does not exist."
-        );
-        require(
-            latitude >= -90000000 && latitude <= 90000000,
-            "Error: Invalid latitude."
-        );
-        require(
-            longitude >= -180000000 && longitude <= 180000000,
-            "Error: Invalid longitude."
         );
 
         ProductionSite storage site = productionSites[msg.sender];
 
         site.name = name;
         site.capacity = capacity;
-        site.location = GeoLocation(latitude, longitude);
 
         emit ProductionSiteUpdated(msg.sender);
     }
@@ -259,11 +266,7 @@ contract WoodTracker {
         uint256 weightInKg,
         string memory woodType,
         string memory cutType
-    ) external hasRole(msg.sender) {
-        require(
-            roles[msg.sender] == Role.Extractor,
-            "Error: Caller is not an Extractor."
-        );
+    ) external isExtractor(msg.sender) {
         require(weightInKg > 0, "Error: Weight must be greater than zero.");
         require(
             bytes(productionSites[msg.sender].name).length > 0,
@@ -272,7 +275,7 @@ contract WoodTracker {
 
         woodRecords[woodRecordCounter] = WoodRecord({
             id: woodRecordCounter,
-            origin: , // TODO use the production site location as the origin
+            origin: productionSites[msg.sender].location,
             weightInKg: weightInKg,
             woodType: woodType,
             cutType: cutType,
