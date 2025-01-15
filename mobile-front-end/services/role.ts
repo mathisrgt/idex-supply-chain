@@ -47,13 +47,13 @@ async function fetchUserRole(sender: Address, user: Address): Promise<number> {
     return Number(roleId);
 }
 
-export async function fetchAllUserRoles(sender: Address): Promise<{ user: Address; role: number }[]> {
+export async function fetchAllUserRoles(sender: Address): Promise<{ address: Address; role: number }[]> {
     const userAddresses = await fetchUserCreated();
 
     const userRoles = await Promise.all(
-        userAddresses.map(async (user) => {
-            const role = await fetchUserRole(sender, user);
-            return { user, role };
+        userAddresses.map(async (address) => {
+            const role = await fetchUserRole(sender, address);
+            return { address, role };
         })
     );
 

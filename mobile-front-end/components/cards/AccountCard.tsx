@@ -12,15 +12,16 @@ import { Divider, Link, Tabs, Tab, Button, Input, Modal, useDisclosure, ModalBod
 // Wagmi
 import { useAccount, useDisconnect } from 'wagmi'
 import { Copy, MailIcon, Plus, Search } from "lucide-react";
-import { Hex } from "viem";
+import { Address, Hex } from "viem";
 import DeleteAccountButton from "../buttons/DeleteAccountButton";
+import { Role } from "@/types/role";
 
 interface AccountCardProps {
-    name: string;
-    address: Hex;
+    address: Address;
+    role: Role;
 }
 
-export default function AccountCard() {
+export default function AccountCard({ address, role }: AccountCardProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
@@ -57,25 +58,9 @@ export default function AccountCard() {
                             <ModalHeader className="flex flex-col gap-1">Edit user</ModalHeader>
                             <ModalBody>
                                 <Input
-                                    label="Name"
-                                    labelPlacement="inside"
-                                    value="User"
-                                    type="text"
-                                    disabled
-                                    className="flex justify-between w-full"
-                                    classNames={{
-                                        label: [
-                                            "!text-default-500",
-                                        ],
-                                        input: [
-                                            "!text-default-500",
-                                        ],
-                                    }}
-                                />
-                                <Input
                                     label="Address"
                                     labelPlacement="inside"
-                                    value="1a2b3c...d4e5f6"
+                                    value={address}
                                     type="text"
                                     disabled
                                     endContent={
@@ -134,10 +119,15 @@ export default function AccountCard() {
                         <p className="text-md">User</p>
                     </CardHeader>
                     <CardBody className="py-0">
-                        <p className="text-small text-default-500">0x2a...8u5</p>
+                        <p className="text-small text-default-500">{address}</p>
                     </CardBody>
                     <CardFooter>
-                        <Chip size="sm" color="danger">Admin</Chip>
+                        {role === Role.Admin ?
+                            <Chip size="sm" color="danger">Admin</Chip> :
+                            role === Role.Extractor ?
+                                <Chip size="sm" color="danger">Admin</Chip> :
+                                <></>
+                        }
                     </CardFooter>
                 </Card>
             </div>

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cometh/connect-react-hooks": "^0.0.12",
     "@cometh/connect-sdk-4337": "^0.1.13",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
@@ -27,8 +28,7 @@
     "recharts": "^2.13.3",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^2.21.49",
-    "wagmi": "^2.13.0"
+    "viem": "^2.21.49"
   },
   "devDependencies": {
     "@types/node": "^20",

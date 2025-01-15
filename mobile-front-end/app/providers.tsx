@@ -7,11 +7,10 @@ import { ReactNode } from "react";
 import { NextUIProvider } from "@nextui-org/react";
 
 // Web3
-import type { Hex } from "viem";
 import { polygonAmoy } from "viem/chains";
 import { http, WagmiProvider, createConfig } from "wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { smartAccountConnector } from "@cometh/connect-sdk-4337";
+import { ConnectProvider } from "@cometh/connect-react-hooks";
 
 // Env
 import { bundlerUrl, comethApiKey, paymasterUrl } from "@/environment/blockchain/account_abstraction";
@@ -24,28 +23,36 @@ interface ProvidersProps {
 export const Providers: React.FC<ProvidersProps> = ({ children }) => {
     const queryClient = new QueryClient();
 
-    const connector = smartAccountConnector({
-        chain: polygonAmoy,
-        apiKey: comethApiKey,
-        bundlerUrl,
-        rpcUrl,
-        paymasterUrl
-    });
-
-    const web3Config = createConfig({
+    const config = createConfig({
         chains: [polygonAmoy],
-        connectors: [connector],
         transports: {
             [polygonAmoy.id]: http(),
         },
-        // ssr: true, // To avoid client - server rendering errors
+        // ssr: true,
     });
 
-    return <WagmiProvider config={web3Config}>
+    const networksConfig = [
+        {
+            chain: polygonAmoy,
+            bundlerUrl,
+            paymasterUrl,
+            rpcUrl
+        },
+    ];
+
+    return <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-            <NextUIProvider>
-                {children}
-            </NextUIProvider>
+            <ConnectProvider
+                config={{
+                    apiKey: comethApiKey,
+                    networksConfig
+                }}
+                queryClient={queryClient}
+            >
+                <NextUIProvider>
+                    {children}
+                </NextUIProvider>
+            </ConnectProvider>
         </QueryClientProvider>
     </WagmiProvider>
 }

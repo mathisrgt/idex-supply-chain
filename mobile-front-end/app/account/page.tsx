@@ -11,14 +11,14 @@ import { Button } from "@nextui-org/react";
 // UX (Components)
 import NavBar from "@/components/bars/NavBar";
 
-// Wagmi
-import { useAccount, useDisconnect } from 'wagmi';
+// Web3
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import PageTitle from "@/components/text/PageTitle";
 import { Copy } from "lucide-react";
 import { fetchAllWoodRecordDetails } from "@/services/woodRecord";
 import { fetchAllUserRoles } from "@/services/role";
 import { fetchAllProductionSiteDetails } from "@/services/productionSites";
+import { useAccount, useDisconnect } from "@cometh/connect-react-hooks";
 
 export default function Account() {
     useRedirectOnLargeScreen();
