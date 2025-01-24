@@ -29,11 +29,11 @@ export default function Home() {
   const connectWallet = async () => {
     if (walletAddress) {
       console.log("Try to connect with address:", walletAddress);
-      connectAsync({ address: walletAddress });
+      await connectAsync({ address: walletAddress });
     }
     else {
       console.log("No wallet found.");
-      connectAsync();
+      await connectAsync();
     }
   };
 

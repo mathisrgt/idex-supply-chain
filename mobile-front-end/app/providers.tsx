@@ -36,7 +36,7 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
             chain: polygonAmoy,
             bundlerUrl,
             paymasterUrl,
-            rpcUrl
+            rpcUrl,
         },
     ];
 

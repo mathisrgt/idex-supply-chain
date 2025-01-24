@@ -34,6 +34,7 @@ import { woodTrackerContractAbi, woodTrackerContractAddress } from "@/environmen
 // - Update rights
 
 export default function Company() {
+
     const { isConnected, address: sender } = useAccount();
     const { writeContract, isError, isSuccess, error, data } = useWriteContract();
 
@@ -68,7 +69,7 @@ export default function Company() {
     * @param role The role to assign (as a number corresponding to the Role enum).
     */
     async function assignRole(sender: Address, user: Address | undefined, role: number): Promise<void> {
-        console.log(`Assigning role ${role} to user ${user} by sender ${sender}`);
+        console.log(`Assigning role ${role} to user ${user} by sender ${sender} at contract ${woodTrackerContractAddress}`);
 
         if (!sender)
             throw new Error("AssignRole Service - Error: No sender specified.");
@@ -85,7 +86,7 @@ export default function Company() {
                 abi: woodTrackerContractAbi,
                 functionName: "assignRole",
                 args: [user, role],
-                account: sender,
+                account: sender
             });
 
             console.log("Transaction hash for assigning role: ", txHash);

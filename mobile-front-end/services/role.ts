@@ -2,7 +2,7 @@ import { woodTrackerContractAddress, woodTrackerContractAbi } from "@/environmen
 import { rpcUrl } from "@/environment/blockchain/rpc";
 import { Address, createPublicClient, decodeEventLog, http, Log, parseAbi } from "viem";
 import { polygonAmoy } from "viem/chains";
-import { wait } from "./other";
+import { wait, waitInSec } from "./other";
 import { useAccount } from "@cometh/connect-react-hooks";
 
 const client = createPublicClient({
@@ -38,8 +38,6 @@ async function fetchUserCreated(): Promise<Address[]> {
 async function fetchUserRole(sender: Address, user: Address): Promise<number> {
     console.log(`Call to fetchUserRole with address: `, sender);
 
-    await wait(300);
-
     const roleId = await client.readContract({
         address: woodTrackerContractAddress,
         abi: woodTrackerContractAbi,
@@ -61,48 +59,15 @@ export async function fetchAllUserRoles(sender: Address | undefined): Promise<{ 
 
     const userAddresses = await fetchUserCreated();
 
-    const userRoles = await Promise.all(
-        userAddresses.map(async (address) => {
-            const role = await fetchUserRole(sender, address);
-            return { address, role };
-        })
-    );
+    const userRoles = [];
+    for (const address of userAddresses) {
+        await wait(200);
+        const role = await fetchUserRole(sender, address);
+        userRoles.push({ address, role });
+    }
 
     console.log("User Roles: ", userRoles);
 
     return userRoles;
 }
 
-/**
- * Assigns a role to a user on the blockchain.
- * @param sender The address of the sender (must be an Admin).
- * @param user The address of the user to whom the role is being assigned.
- * @param role The role to assign (as a number corresponding to the Role enum).
- */
-export async function assignRole(sender: Address, user: Address | undefined, role: number): Promise<void> {
-    console.log(`Assigning role ${role} to user ${user} by sender ${sender}`);
-
-    if (!sender)
-        throw new Error("AssignRole Service - Error: No sender specified.");
-
-    if (!user)
-        throw new Error("AssignRole Service - Error: No user specified.");
-
-    if (role <= 0)
-        throw new Error("AssignRole Service - Error: Invalid role. Must be greater than 0.");
-
-    try {
-        const txHash = await walletClient.writeContract({
-            address: woodTrackerContractAddress,
-            abi: woodTrackerContractAbi,
-            functionName: "assignRole",
-            args: [user, role],
-            account: sender,
-        });
-
-        console.log("Transaction hash for assigning role: ", txHash);
-    } catch (error) {
-        console.log("Error assigning role: ", error);
-        throw error;
-    }
-}

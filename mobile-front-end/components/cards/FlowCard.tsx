@@ -15,13 +15,9 @@ import { Calendar, CalendarClock, Edit2, GitCommit, MapPinHouse, Plus, Truck, We
 import { Hex } from "viem";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import { WoodFlow } from "@/types/woodFlows";
 
-interface FlowCardProps {
-    id: number;
-    // ownerAddress: Hex;
-}
-
-export default function FlowCard(props: FlowCardProps) {
+export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
@@ -55,7 +51,7 @@ export default function FlowCard(props: FlowCardProps) {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">WoodFlow #{props.id}</ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">WoodFlow #{woodFlow.id}</ModalHeader>
                             <ModalBody className="flex gap-4 pt-0">
 
                                 <div className="flex flex-col gap-3">
@@ -69,11 +65,11 @@ export default function FlowCard(props: FlowCardProps) {
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <Weight size={20} />
-                                        <p>45 kg</p>
+                                        <p>{woodFlow.weightInKg} kg</p>
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <MapPinHouse size={20} />
-                                        <p>Orléans, France</p>
+                                        <p>{woodFlow.origin}</p>
                                     </div>
                                 </div>
                                 <Accordion type="single" collapsible className="w-full">
@@ -123,7 +119,7 @@ export default function FlowCard(props: FlowCardProps) {
                 <Card className="max-w-[400px] shadow-none border">
                     <CardHeader className="flex gap-3">
                         <div className="flex flex-col">
-                            <p className="text-md">WoodFlow #{props.id}</p>
+                            <p className="text-md">WoodFlow #{woodFlow.id}</p>
                         </div>
                     </CardHeader>
                     <CardFooter className="pt-0 flex gap-2">
@@ -131,7 +127,7 @@ export default function FlowCard(props: FlowCardProps) {
                             <Truck size={15} />
                         </Chip>
                         <Chip>
-                            45kg
+                            {woodFlow.weightInKg}
                         </Chip>
                         <Chip>Paris, France</Chip>
                     </CardFooter>

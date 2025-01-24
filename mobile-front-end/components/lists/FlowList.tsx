@@ -13,8 +13,9 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Butto
 import { useAccount, useDisconnect } from 'wagmi'
 import { Plus, Search } from "lucide-react";
 import FlowCard from "../cards/FlowCard";
+import { WoodFlow } from "@/types/woodFlows";
 
-export default function FlowList() {
+export default function FlowList({ woodFlows }: { woodFlows: WoodFlow[] }) {
     return (
         <>
             <Input
@@ -25,20 +26,9 @@ export default function FlowList() {
                 }
                 className="flex justify-between w-full"
             />
-            <Tabs aria-label="Options">
-                <Tab key="current" title="Current">
-                    <FlowCard id={7276} />
-                </Tab>
-                <Tab key="history" title="History" className="flex flex-col gap-4">
-                    <FlowCard id={2839} />
-                    <FlowCard id={1934} />
-                </Tab>
-                <Tab key="all" title="All" className="flex flex-col gap-4">
-                    <FlowCard id={7276} />
-                    <FlowCard id={2839} />
-                    <FlowCard id={1934} />
-                </Tab>
-            </Tabs>
+            {woodFlows.map((woodFlow) => {
+                return <FlowCard woodFlow={woodFlow} />
+            })}
         </>
     );
 }
