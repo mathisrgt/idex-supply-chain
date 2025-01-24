@@ -72,6 +72,19 @@ export const woodTrackerContractAbi: Abi = [
         "inputs": [
             {
                 "indexed": true,
+                "internalType": "address",
+                "name": "user",
+                "type": "address"
+            }
+        ],
+        "name": "UserRemoved",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
                 "internalType": "uint256",
                 "name": "id",
                 "type": "uint256"
@@ -109,10 +122,49 @@ export const woodTrackerContractAbi: Abi = [
     {
         "inputs": [
             {
+                "internalType": "string",
+                "name": "certificate",
+                "type": "string"
+            }
+        ],
+        "name": "addCertificate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "permit",
+                "type": "string"
+            }
+        ],
+        "name": "addPermit",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
-                "name": "siteAddress",
+                "name": "user",
                 "type": "address"
             },
+            {
+                "internalType": "enum WoodTracker.Role",
+                "name": "role",
+                "type": "uint8"
+            }
+        ],
+        "name": "assignRole",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
                 "internalType": "string",
                 "name": "name",
@@ -144,54 +196,13 @@ export const woodTrackerContractAbi: Abi = [
                 "type": "int256"
             }
         ],
-        "name": "addProductionSite",
+        "name": "createProductionSite",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "inputs": [
-            {
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            }
-        ],
-        "name": "assignAdminRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "user",
-                "type": "address"
-            },
-            {
-                "internalType": "enum WoodTracker.Role",
-                "name": "role",
-                "type": "uint8"
-            }
-        ],
-        "name": "assignRole",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "id",
-                "type": "uint256"
-            },
-            {
-                "internalType": "string",
-                "name": "origin",
-                "type": "string"
-            },
             {
                 "internalType": "uint256",
                 "name": "weightInKg",
@@ -206,11 +217,6 @@ export const woodTrackerContractAbi: Abi = [
                 "internalType": "string",
                 "name": "cutType",
                 "type": "string"
-            },
-            {
-                "internalType": "address",
-                "name": "productionSite",
-                "type": "address"
             }
         ],
         "name": "createWoodRecord",
@@ -313,9 +319,21 @@ export const woodTrackerContractAbi: Abi = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "string",
+                        "components": [
+                            {
+                                "internalType": "int256",
+                                "name": "latitude",
+                                "type": "int256"
+                            },
+                            {
+                                "internalType": "int256",
+                                "name": "longitude",
+                                "type": "int256"
+                            }
+                        ],
+                        "internalType": "struct WoodTracker.GeoLocation",
                         "name": "origin",
-                        "type": "string"
+                        "type": "tuple"
                     },
                     {
                         "internalType": "uint256",
@@ -373,9 +391,17 @@ export const woodTrackerContractAbi: Abi = [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "siteAddress",
+                "name": "user",
                 "type": "address"
-            },
+            }
+        ],
+        "name": "removeUser",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
                 "internalType": "string",
                 "name": "name",
@@ -385,21 +411,6 @@ export const woodTrackerContractAbi: Abi = [
                 "internalType": "uint256",
                 "name": "capacity",
                 "type": "uint256"
-            },
-            {
-                "internalType": "string[]",
-                "name": "certificates",
-                "type": "string[]"
-            },
-            {
-                "internalType": "int256",
-                "name": "latitude",
-                "type": "int256"
-            },
-            {
-                "internalType": "int256",
-                "name": "longitude",
-                "type": "int256"
             }
         ],
         "name": "updateProductionSite",

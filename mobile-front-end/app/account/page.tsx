@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 // UI
 import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Input } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
+import { Copy } from "lucide-react";
 
 // UX (Components)
 import NavBar from "@/components/bars/NavBar";
@@ -14,11 +15,12 @@ import NavBar from "@/components/bars/NavBar";
 // Web3
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import PageTitle from "@/components/text/PageTitle";
-import { Copy } from "lucide-react";
+
 import { fetchAllWoodRecordDetails } from "@/services/woodRecord";
 import { fetchAllUserRoles } from "@/services/role";
 import { fetchAllProductionSiteDetails } from "@/services/productionSites";
 import { useAccount, useDisconnect } from "@cometh/connect-react-hooks";
+import { shortenAddress } from "@/components/text/TextFormat";
 
 export default function Account() {
     useRedirectOnLargeScreen();
@@ -37,7 +39,7 @@ export default function Account() {
             <Input
                 label="Address"
                 labelPlacement="inside"
-                value={address}
+                value={shortenAddress(address)}
                 type="text"
                 disabled
                 endContent={
@@ -82,16 +84,6 @@ export default function Account() {
                 }}
             >
                 Test call fetchAllWoodRecordDetails
-            </Button>
-
-            <Button
-                color="default"
-                className="w-full"
-                onClick={() => {
-                    fetchAllUserRoles(address);
-                }}
-            >
-                Test call fetchAllUserRoles
             </Button>
 
             <Button

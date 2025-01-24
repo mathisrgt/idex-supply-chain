@@ -14,7 +14,8 @@ import { useAccount, useDisconnect } from 'wagmi'
 import { Copy, MailIcon, Plus, Search } from "lucide-react";
 import { Address, Hex } from "viem";
 import DeleteAccountButton from "../buttons/DeleteAccountButton";
-import { Role } from "@/types/role";
+import { Role } from "@/types/users";
+import { shortenAddress } from "../text/TextFormat";
 
 interface AccountCardProps {
     address: Address;
@@ -60,7 +61,7 @@ export default function AccountCard({ address, role }: AccountCardProps) {
                                 <Input
                                     label="Address"
                                     labelPlacement="inside"
-                                    value={address}
+                                    value={shortenAddress(address)}
                                     type="text"
                                     disabled
                                     endContent={
@@ -113,19 +114,19 @@ export default function AccountCard({ address, role }: AccountCardProps) {
                 </ModalContent>
             </Modal>
 
-            <div onClick={onOpen} className="flex-1">
-                <Card className="shadow-none border">
+            <div onClick={onOpen} className="w-1/2">
+                <Card className="shadow-none border m-2">
                     <CardHeader>
                         <p className="text-md">User</p>
                     </CardHeader>
                     <CardBody className="py-0">
-                        <p className="text-small text-default-500">{address}</p>
+                        <p className="text-small text-default-500">{shortenAddress(address)}</p>
                     </CardBody>
                     <CardFooter>
                         {role === Role.Admin ?
                             <Chip size="sm" color="danger">Admin</Chip> :
                             role === Role.Extractor ?
-                                <Chip size="sm" color="danger">Admin</Chip> :
+                                <Chip size="sm" color="success">Extractor</Chip> :
                                 <></>
                         }
                     </CardFooter>
