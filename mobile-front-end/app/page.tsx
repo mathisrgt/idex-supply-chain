@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, useDisclosure } from "@nextui-org/react";
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, useDisclosure } from "@nextui-org/react";
 
 // Web3
 import Image from "next/image";
@@ -29,6 +29,7 @@ export default function Home() {
 
   const [loading, setLoading] = useState(false);
   const [requestRoleLoading, setRequestRoleLoading] = useState(false);
+  const [requestSiteCreationLoading, setRequestSiteCreationLoading] = useState(false);
 
   const [role, setRole] = useState<Role | null>();
   const [requestedRole, setRequestedRole] = useState<Role | null>();
@@ -216,25 +217,100 @@ export default function Home() {
                     </SelectItem>
                   ))}
                 </Select>
+
+                {requestedRole === Role.Extractor.valueOf() ?
+                  <>
+                    <Input
+                      name="name"
+                      label="Production site name"
+                      placeholder="Enter production site name"
+                      required
+                      className="w-full"
+                    />
+
+                    <Input
+                      name="capacity"
+                      label="Capacity"
+                      placeholder="Enter capacity"
+                      type="number"
+                      required
+                      className="w-full"
+                    />
+
+                    <Input
+                      name="address"
+                      label="Address"
+                      placeholder="Enter postal address"
+                      className="w-full"
+                    />
+
+                    <div className="flex flex-row gap-2">
+                      <div className="flex-1">
+                        <Button
+                          className="w-full"
+                          variant="flat"
+                          onPress={() => document.getElementById("permit-upload")?.click()}
+                        >
+                          Permits
+                        </Button>
+                        <input
+                          type="file"
+                          id="permit-upload"
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files?.length) {
+                              alert(`File selected: ${e.target.files[0].name}`);
+                            }
+                          }}
+                        />
+                      </div>
+
+                      <div className="flex-1">
+                        <Button
+                          className="w-full"
+                          variant="flat"
+                          onPress={() => document.getElementById("certificate-upload")?.click()}
+                        >
+                          Certificates
+                        </Button>
+                        <input
+                          type="file"
+                          id="certificate-upload"
+                          className="hidden"
+                          onChange={(e) => {
+                            if (e.target.files?.length) {
+                              alert(`File selected: ${e.target.files[0].name}`);
+                            }
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </> :
+                  <></>
+                }
               </ModalBody>
 
               <ModalFooter className="flex justify-between">
                 <Button color="primary" onPress={() => handleRequestRole(onClose)}>
-                  {requestRoleLoading ? <Spinner color="default" size="sm" /> : "Send"}
+                  {requestRoleLoading ? <Spinner color="default" size="sm" /> : "Add Role"}
                 </Button>
+                {<Button color="primary" onPress={() => handleRequestRole(onClose)}>
+                  {requestSiteCreationLoading ? <Spinner color="default" size="sm" /> : "Add Production Site"}
+                </Button>}
               </ModalFooter>
             </>
+
           )}
         </ModalContent>
-      </Modal>
+      </Modal >
 
       <div className="flex flex-col items-center justify-between min-h-screen w-full p-8 text-center">
-        <h1 className="text-2xl text-white mt-24 z-10 title">WoodTracker</h1>
+        <h1 className="text-2xl text-white z-10 title">WoodTracker</h1>
 
         <div className="flex flex-col gap-4 w-full">
           <div className="z-10 mb-5">
             {sender && <h1 className="text-lg text-white z-10 title">Welcome back, {shortenAddress(sender)}.</h1>}
-            {role && <h1 className="text-lg text-white mt-2 mb-2 z-10 title">You are registered as {Role[role].toString()}.</h1>}
+            {role ? <h1 className="text-lg text-white mt-2 mb-2 z-10 title">You are registered as {Role[role].toString()}.</h1> : <></>}
           </div>
 
           {!sender && <Button
@@ -253,10 +329,10 @@ export default function Home() {
             {requestRoleLoading ? <Spinner color="default" size="md" /> : "Request access"}
           </Button>}
 
-          {sender && role && <Button
+          {sender && role ? <Button
             onClick={() => { router.push("/home"); }} color="primary" className="w-ful" size="lg">
             Continue
-          </Button>}
+          </Button> : <></>}
 
           {sender && <Button
             onClick={newAccount} className={`w-full ${isPending ? "bg-zinc-800" : ""}`} color="primary" size="lg" disabled={isPending}>
