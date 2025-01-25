@@ -68,7 +68,7 @@ export default function Company() {
     * @param user The address of the user to whom the role is being assigned.
     * @param role The role to assign (as a number corresponding to the Role enum).
     */
-    async function assignRole(sender: Address, user: Address | undefined, role: number): Promise<void> {
+    async function assignRole(user: Address | undefined, role: number): Promise<void> {
         console.log(`Assigning role ${role} to user ${user} by sender ${sender} at contract ${woodTrackerContractAddress}`);
 
         if (!sender)
@@ -96,6 +96,37 @@ export default function Company() {
         }
     }
 
+    /**
+ * Removes a user from the blockchain by resetting their role to None.
+ * @param sender The address of the sender (must be an Admin).
+ * @param user The address of the user to be removed.
+ */
+    async function removeUser(user: Address | undefined): Promise<void> {
+        console.log(`Removing user ${user} by sender ${sender} at contract ${woodTrackerContractAddress}`);
+
+        if (!sender)
+            throw new Error("RemoveUser Service - Error: No sender specified.");
+
+        if (!user)
+            throw new Error("RemoveUser Service - Error: No user specified.");
+
+        try {
+            // Call the `removeUser` function on the contract
+            const txHash = writeContract({
+                address: woodTrackerContractAddress,
+                abi: woodTrackerContractAbi,
+                functionName: "removeUser",
+                args: [user],
+                account: sender
+            });
+
+            console.log("Transaction hash for removing user: ", txHash);
+        } catch (error) {
+            console.error("Error removing user: ", error);
+            throw error;
+        }
+    }
+
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -105,11 +136,11 @@ export default function Company() {
             {sender ?
                 <main className="p-4 flex flex-col gap-4">
                     <PageTitle text="Company" />
-                    <AccountSearchBar sender={sender} onAssignRole={assignRole} />
+                    <AccountSearchBar onAssignRole={assignRole} />
                     {loading ?
                         <Spinner color="default" />
                         :
-                        users ? <AccountList users={users} /> : "We're sorry, an error occurred while requesting user data."
+                        users ? <AccountList users={users} onAssignRole={assignRole} onRemoveUser={removeUser} /> : "We're sorry, an error occurred while requesting user data."
                     }
                 </main > :
                 <Spinner color="default" />

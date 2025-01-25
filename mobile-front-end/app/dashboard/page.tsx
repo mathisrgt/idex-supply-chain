@@ -17,7 +17,7 @@ import ActionBar from "@/components/bars/ActionBar";
 import FlowList from "@/components/lists/FlowList";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import PageTitle from "@/components/text/PageTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { WoodFlow } from "@/types/woodFlows";
 import { waitInSec } from "@/services/other";
 import { fetchAllWoodRecordDetails } from "@/services/woodRecord";
@@ -48,6 +48,10 @@ export default function Dashboard() {
             router.push('/');
         }
     }
+
+    useEffect(() => {
+        fetchWoodFlows();
+    }, []);
 
     return (
         <>

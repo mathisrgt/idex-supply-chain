@@ -20,14 +20,16 @@ import { User } from "@/types/users";
 
 interface AccountListProps {
     users: User[];
+    onAssignRole: Function;
+    onRemoveUser: Function;
 }
 
-export default function AccountList({ users }: AccountListProps) {
+export default function AccountList({ users, onAssignRole: assignRole, onRemoveUser: removeUser }: AccountListProps) {
     return (
         <>
             <div className="flex flex-wrap">
                 {users?.map((user, id) => {
-                    return <AccountCard key={id} address={user.address} role={user.role} />;
+                    return <AccountCard key={id} userAddress={user.address} role={user.role} onAssignRole={assignRole} onRemoveUser={removeUser} />;
                 })}
             </div>
         </>

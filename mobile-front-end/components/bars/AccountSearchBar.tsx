@@ -17,7 +17,7 @@ import ActionBar from "@/components/bars/ActionBar";
 import AddAccountButton from "../buttons/AddAccountButton";
 import { Address } from "viem";
 
-export default function AccountSearchBar({ sender, onAssignRole: assignRole }: { sender: Address, onAssignRole: Function }) {
+export default function AccountSearchBar({ onAssignRole: assignRole }: { onAssignRole: Function }) {
     return (
         <div className="flex gap-2">
             <Input
@@ -25,7 +25,7 @@ export default function AccountSearchBar({ sender, onAssignRole: assignRole }: {
                 placeholder="Search..."
                 aria-label="Search input"
             />
-            <AddAccountButton sender={sender} onAssignRole={assignRole} />
+            <AddAccountButton onAssignRole={assignRole} />
         </div>
     );
 }

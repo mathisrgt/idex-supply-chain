@@ -7,7 +7,7 @@ import { UserRoundPlus } from "lucide-react";
 import { Role } from "@/types/users";
 import { Address } from "viem";
 
-export default function AddAccountButton({ sender, onAssignRole: assignRole }: { sender: Address, onAssignRole: Function }) {
+export default function AddAccountButton({ onAssignRole: assignRole }: { onAssignRole: Function }) {
     const [isModalOpen, setModalOpen] = useState(false);
 
     const [userAddress, setUserAddress] = useState<Address>();
@@ -21,7 +21,7 @@ export default function AddAccountButton({ sender, onAssignRole: assignRole }: {
 
     function handleSubmit() {
         try {
-            assignRole(sender, userAddress, role);
+            assignRole(userAddress, role);
             closeModal();
         } catch (error) {
             console.log('Error: ', userAddress);

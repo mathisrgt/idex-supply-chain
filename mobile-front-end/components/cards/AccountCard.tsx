@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Divider, Link, Tabs, Tab, Button, Input, Modal, useDisclosure, ModalBody, ModalContent, ModalFooter, ModalHeader, Badge, Chip, Card, CardHeader, CardBody, CardFooter, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Modal, useDisclosure, ModalBody, ModalContent, ModalFooter, ModalHeader, Chip, Card, CardHeader, CardBody, CardFooter, Select, SelectItem, Spinner } from "@nextui-org/react";
 
 // UX (Components)
 
@@ -16,14 +16,41 @@ import { Address, Hex } from "viem";
 import DeleteAccountButton from "../buttons/DeleteAccountButton";
 import { Role } from "@/types/users";
 import { shortenAddress } from "../text/TextFormat";
+import { useState } from "react";
 
 interface AccountCardProps {
-    address: Address;
+    userAddress: Address;
     role: Role;
+    onAssignRole: Function;
+    onRemoveUser: Function;
 }
 
-export default function AccountCard({ address, role }: AccountCardProps) {
+export default function AccountCard({ userAddress, role, onAssignRole: assignRole, onRemoveUser: removeUser }: AccountCardProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    const [editRoleLoading, setEditRoleLoading] = useState(false);
+
+    async function handleEditRole(onClose: () => void) {
+        setEditRoleLoading(true);
+        try {
+            await assignRole(userAddress, role);
+            onClose();
+        } catch (error) {
+            console.error("Error: Unable to edit role.", error);
+        }
+        setEditRoleLoading(false);
+    }
+
+    async function handleRemoveUser(onClose: () => void) {
+        setEditRoleLoading(true);
+        try {
+            await removeUser(userAddress);
+            onClose();
+        } catch (error) {
+            console.error("Error: Unable to remove user.", error);
+        }
+        setEditRoleLoading(false);
+    }
 
     return (
         <>
@@ -61,7 +88,7 @@ export default function AccountCard({ address, role }: AccountCardProps) {
                                 <Input
                                     label="Address"
                                     labelPlacement="inside"
-                                    value={shortenAddress(address)}
+                                    value={shortenAddress(userAddress)}
                                     type="text"
                                     disabled
                                     endContent={
@@ -80,7 +107,7 @@ export default function AccountCard({ address, role }: AccountCardProps) {
                                 <Select
                                     label="Role"
                                     labelPlacement="inside"
-                                    defaultSelectedKeys={['admin']}
+                                    defaultSelectedKeys={[Role[role].toString().toLowerCase()]}
                                     className="flex justify-between items-center w-full"
                                 >
                                     <SelectItem key={'admin'}>
@@ -104,9 +131,9 @@ export default function AccountCard({ address, role }: AccountCardProps) {
                                 </Select>
                             </ModalBody>
                             <ModalFooter className="flex justify-between">
-                                <DeleteAccountButton onDelete={onClose} />
-                                <Button color="primary" onPress={onClose}>
-                                    Save
+                                <DeleteAccountButton onRemoveUser={async () => handleRemoveUser(onClose)} />
+                                <Button color="primary" onPress={() => handleEditRole(onClose)}>
+                                    {editRoleLoading ? <Spinner color="default" size="sm" /> : "Save"}
                                 </Button>
                             </ModalFooter>
                         </>
@@ -120,7 +147,7 @@ export default function AccountCard({ address, role }: AccountCardProps) {
                         <p className="text-md">User</p>
                     </CardHeader>
                     <CardBody className="py-0">
-                        <p className="text-small text-default-500">{shortenAddress(address)}</p>
+                        <p className="text-small text-default-500">{shortenAddress(userAddress)}</p>
                     </CardBody>
                     <CardFooter>
                         {role === Role.Admin ?
