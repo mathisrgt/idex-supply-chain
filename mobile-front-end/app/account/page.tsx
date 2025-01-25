@@ -99,6 +99,5 @@ export default function Account() {
             }
             <NavBar />
         </main>
-
     );
 }

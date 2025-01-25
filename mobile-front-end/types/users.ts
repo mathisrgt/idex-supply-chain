@@ -7,13 +7,14 @@ export type User = {
 
 export enum Role {
     None = 0,
-    Admin = 1,
-    Extractor = 2,
-    Transporter = 3,
-    Warehouse = 4,
-    Manufacturer = 5,
-    Client = 6,
-    Viewer = 7,
+    Requester = 1,
+    Admin = 2,
+    Extractor = 3,
+    Transporter = 4,
+    Warehouse = 5,
+    Manufacturer = 6,
+    Client = 7,
+    Viewer = 8,
 }
 
 

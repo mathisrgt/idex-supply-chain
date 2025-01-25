@@ -35,7 +35,7 @@ async function fetchUserCreated(): Promise<Address[]> {
     return userAddresses;
 }
 
-async function fetchUserRole(sender: Address, user: Address): Promise<number> {
+export async function fetchUserRole(sender: Address, user: Address): Promise<number> {
     console.log(`Call to fetchUserRole with address: `, sender);
 
     const roleId = await client.readContract({
