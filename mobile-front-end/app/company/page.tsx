@@ -140,7 +140,7 @@ export default function Company() {
                         users ?
                             users.length === 0 ?
                                 "No account recorded 🍃" :
-                                <div className="flex flex-col flex-grow gap-4">
+                                <div className="flex flex-col flex-grow gap-4 w-full">
                                     <AccountSearchBar onAssignRole={assignRole} />
                                     <AccountList users={users} onAssignRole={assignRole} onRemoveUser={removeUser} />
                                 </div>
