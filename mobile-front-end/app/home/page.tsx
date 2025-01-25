@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import TransactionPreviewList from "@/components/lists/TransactionPreviewList";
 import PageTitle, { PageSecondaryTitle } from "@/components/text/PageTitle";
+import { waitInSec } from "@/services/other";
 
 export default function Home() {
     useRedirectOnLargeScreen();
@@ -31,12 +32,6 @@ export default function Home() {
     const router = useRouter();
 
     const { address, isConnected } = useAccount();
-
-    useEffect(() => {
-        // if (!isConnected) {
-        //     router.push('/');
-        // }
-    }, []);
 
     return (
         <>

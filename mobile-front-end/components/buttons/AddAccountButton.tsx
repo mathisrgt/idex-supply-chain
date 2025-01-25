@@ -34,7 +34,8 @@ export default function AddAccountButton({ onAssignRole: assignRole }: { onAssig
                 <UserRoundPlus size={17} />
             </Button>
 
-            <Modal isOpen={isModalOpen} onClose={closeModal}>
+            <Modal isOpen={isModalOpen} onClose={closeModal} backdrop="blur"
+                placement="center">
                 <ModalContent>
                     <ModalHeader>
                         <p>Add a user</p>

@@ -62,7 +62,7 @@ export async function fetchAllWoodRecordDetails(sender: Address | undefined): Pr
     const woodRecordIds = await fetchWoodRecordsId();
     const woodRecordsDetails = [];
     for (const woodRecordId of woodRecordIds) {
-        await wait(200);
+        await wait(500);
         const woodRecord = await fetchWoodRecordDetails(sender, woodRecordId);
         woodRecordsDetails.push(woodRecord);
     }

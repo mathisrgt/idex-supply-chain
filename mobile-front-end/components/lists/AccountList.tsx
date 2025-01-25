@@ -28,7 +28,7 @@ export default function AccountList({ users, onAssignRole: assignRole, onRemoveU
     return (
         <>
             <div className="flex flex-wrap">
-                {users?.map((user, id) => {
+                {users.sort((a, b) => a.role - b.role).map((user, id) => {
                     return <AccountCard key={id} userAddress={user.address} role={user.role} onAssignRole={assignRole} onRemoveUser={removeUser} />;
                 })}
             </div>

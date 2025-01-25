@@ -11,7 +11,6 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Butto
 import NavBar from "@/components/bars/NavBar";
 
 // Wagmi
-import { useAccount, useDisconnect } from 'wagmi'
 import { Plus } from "lucide-react";
 import ActionBar from "@/components/bars/ActionBar";
 import FlowList from "@/components/lists/FlowList";
@@ -21,6 +20,7 @@ import { useEffect, useState } from "react";
 import { WoodFlow } from "@/types/woodFlows";
 import { waitInSec } from "@/services/other";
 import { fetchAllWoodRecordDetails } from "@/services/woodRecord";
+import { useAccount, useDisconnect } from "@cometh/connect-react-hooks";
 
 export default function Dashboard() {
     useRedirectOnLargeScreen();
@@ -45,6 +45,7 @@ export default function Dashboard() {
             console.log(error);
 
             setLoading(false);
+            disconnect();
             router.push('/');
         }
     }
@@ -55,12 +56,14 @@ export default function Dashboard() {
 
     return (
         <>
-            <main className="p-4 flex flex-col gap-4">
+            <main className="p-4 flex flex-col gap-4 min-h-screen">
                 <PageTitle text="Dashboard" />
-                {loading ?
-                    <Spinner color="default" /> :
-                    woodFlows ? <FlowList woodFlows={woodFlows} /> : "We're sorry, an error occurred while requesting user data."
-                }
+                <div className="flex flex-col flex-grow justify-center items-center">
+                    {loading ?
+                        <Spinner color="default" /> :
+                        woodFlows ? woodFlows.length === 0 ? "No wood flows recorded 🍃" : <FlowList woodFlows={woodFlows} /> : "We're sorry, an error occurred while requesting user data."
+                    }
+                </div>
             </main>
             <NavBar />
         </>

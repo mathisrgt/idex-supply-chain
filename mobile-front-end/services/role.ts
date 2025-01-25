@@ -61,7 +61,7 @@ export async function fetchAllUserRoles(sender: Address | undefined): Promise<{ 
 
     const userRoles = [];
     for (const address of userAddresses) {
-        await wait(200);
+        await wait(500);
         const role = await fetchUserRole(sender, address);
         userRoles.push({ address, role });
     }

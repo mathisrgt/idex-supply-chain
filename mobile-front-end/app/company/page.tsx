@@ -11,13 +11,10 @@ import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Butto
 import NavBar from "@/components/bars/NavBar";
 
 // Web3
-import { ArrowRightSquare, Plus } from "lucide-react";
-import ActionBar from "@/components/bars/ActionBar";
 import AccountList from "@/components/lists/AccountList";
 import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import AccountSearchBar from "@/components/bars/AccountSearchBar";
 import PageTitle from "@/components/text/PageTitle";
-import useRedirectWhenNotConnected from "@/hooks/useRedirectWhenNotConnected";
 import { fetchAllUserRoles } from "@/services/role";
 import { useEffect, useState } from "react";
 import { User } from "@/types/users";
@@ -133,18 +130,24 @@ export default function Company() {
 
     return (
         <>
-            {sender ?
-                <main className="p-4 flex flex-col gap-4">
-                    <PageTitle text="Company" />
-                    <AccountSearchBar onAssignRole={assignRole} />
-                    {loading ?
+            <main className="p-4 flex flex-col gap-4 min-h-screen">
+                <PageTitle text="Company" />
+
+                <div className="flex flex-col flex-grow items-center justify-center text-center">
+                    {!sender || loading ?
                         <Spinner color="default" />
                         :
-                        users ? <AccountList users={users} onAssignRole={assignRole} onRemoveUser={removeUser} /> : "We're sorry, an error occurred while requesting user data."
+                        users ?
+                            users.length === 0 ?
+                                "No account recorded 🍃" :
+                                <div className="flex flex-col flex-grow gap-4">
+                                    <AccountSearchBar onAssignRole={assignRole} />
+                                    <AccountList users={users} onAssignRole={assignRole} onRemoveUser={removeUser} />
+                                </div>
+                            : "We're sorry, an error occurred while requesting user data."
                     }
-                </main > :
-                <Spinner color="default" />
-            }
+                </div>
+            </main>
             <NavBar />
         </>
     );

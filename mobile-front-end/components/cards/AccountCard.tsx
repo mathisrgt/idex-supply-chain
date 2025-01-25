@@ -143,10 +143,7 @@ export default function AccountCard({ userAddress, role, onAssignRole: assignRol
 
             <div onClick={onOpen} className="w-1/2">
                 <Card className="shadow-none border m-2">
-                    <CardHeader>
-                        <p className="text-md">User</p>
-                    </CardHeader>
-                    <CardBody className="py-0">
+                    <CardBody className="py-0 mt-4">
                         <p className="text-small text-default-500">{shortenAddress(userAddress)}</p>
                     </CardBody>
                     <CardFooter>
