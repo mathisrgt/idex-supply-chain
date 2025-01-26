@@ -17,38 +17,39 @@ describe("WoodTracker", function () {
   describe("Deployment", function () {
     it("Should set the correct owner and assign admin role", async function () {
       expect(await woodTracker.owner()).to.equal(owner.address);
-      expect(await woodTracker.getRole(owner.address)).to.equal(1);
+      expect(await woodTracker.getRole(owner.address)).to.equal(1); // Role.Admin
     });
   });
 
   describe("Roles", function () {
     it("Should allow the owner to assign an Admin role", async function () {
-      await woodTracker.assignAdminRole(admin.address);
-      expect(await woodTracker.getRole(admin.address)).to.equal(1);
+      await woodTracker.assignRole(admin.address, 1); // Role.Admin
+      expect(await woodTracker.getRole(admin.address)).to.equal(1); // Role.Admin
     });
 
     it("Should prevent non-owner from assigning Admin role", async function () {
       await expect(
-        woodTracker.connect(admin).assignAdminRole(admin.address)
-      ).to.be.revertedWith("Error: Caller is not the contract owner.");
+        woodTracker.connect(admin).assignRole(admin.address, 1) // Role.Admin
+      ).to.be.revertedWith(
+        "Error: Only the contract owner can assign or remove the Admin role."
+      );
     });
 
     it("Should allow Admin to assign non-admin roles", async function () {
-      await woodTracker.assignAdminRole(admin.address);
-      await woodTracker.connect(admin).assignRole(extractor.address, 2);
-      expect(await woodTracker.getRole(extractor.address)).to.equal(2);
+      await woodTracker.assignRole(admin.address, 1); // Role.Admin
+      await woodTracker.connect(admin).assignRole(extractor.address, 2); // Role.Extractor
+      expect(await woodTracker.getRole(extractor.address)).to.equal(2); // Role.Extractor
     });
 
     it("Should prevent assigning 'None' as a role", async function () {
-      await woodTracker.assignAdminRole(admin.address);
+      await woodTracker.assignRole(admin.address, 1); // Role.Admin
       await expect(
-        woodTracker.connect(admin).assignRole(other.address, 0)
+        woodTracker.connect(admin).assignRole(other.address, 0) // Role.None
       ).to.be.revertedWith("Error: Cannot assign 'None' as a role.");
     });
   });
 
   describe("Production Sites", function () {
-    const siteAddress = "0x000000000000000000000000000000000000dEaD";
     const siteName = "Forest A";
     const siteCapacity = 1000;
     const sitePermits = ["Permit1"];
@@ -57,14 +58,17 @@ describe("WoodTracker", function () {
     const longitude = -87654321;
 
     beforeEach(async function () {
-      await woodTracker.assignAdminRole(admin.address);
+      await woodTracker.assignRole(admin.address, 1); // Role.Admin
     });
 
     it("Should allow Admin to add a production site", async function () {
       await woodTracker
         .connect(admin)
-        .addProductionSite(
-          siteAddress,
+        .assignRole(extractor.address, 2); // Role.Extractor
+
+      await woodTracker
+        .connect(extractor)
+        .createProductionSite(
           siteName,
           siteCapacity,
           sitePermits,
@@ -73,7 +77,7 @@ describe("WoodTracker", function () {
           longitude
         );
 
-      const site = await woodTracker.getProductionSite(siteAddress);
+      const site = await woodTracker.getProductionSite(extractor.address);
 
       expect(site.name).to.equal(siteName);
       expect(site.capacity).to.equal(siteCapacity);
@@ -81,12 +85,11 @@ describe("WoodTracker", function () {
       expect(site.location.longitude).to.equal(longitude);
     });
 
-    it("Should prevent non-Admin from adding a production site", async function () {
+    it("Should prevent non-Extractor from adding a production site", async function () {
       await expect(
         woodTracker
           .connect(other)
-          .addProductionSite(
-            siteAddress,
+          .createProductionSite(
             siteName,
             siteCapacity,
             sitePermits,
@@ -94,26 +97,22 @@ describe("WoodTracker", function () {
             latitude,
             longitude
           )
-      ).to.be.revertedWith("Error: Address does not have an assigned role.");
+      ).to.be.revertedWith("Error: Caller is not an extractor.");
     });
   });
 
   describe("Wood Records", function () {
-    const recordId = 1;
-    const origin = "Origin A";
     const weightInKg = 500;
     const woodType = "Oak";
     const cutType = "Cut A";
-    const productionSite = "0x000000000000000000000000000000000000dEaD";
 
     beforeEach(async function () {
-      await woodTracker.assignAdminRole(admin.address);
+      await woodTracker.assignRole(admin.address, 1); // Role.Admin
       await woodTracker.connect(admin).assignRole(extractor.address, 2); // Role.Extractor
 
       await woodTracker
-        .connect(admin)
-        .addProductionSite(
-          productionSite,
+        .connect(extractor)
+        .createProductionSite(
           "Forest A",
           1000,
           ["Permit1"],
@@ -126,59 +125,39 @@ describe("WoodTracker", function () {
     it("Should allow Extractor to create a wood record", async function () {
       await woodTracker
         .connect(extractor)
-        .createWoodRecord(
-          recordId,
-          origin,
-          weightInKg,
-          woodType,
-          cutType,
-          productionSite
-        );
+        .createWoodRecord(weightInKg, woodType, cutType);
 
-      const record = await woodTracker.getWoodRecord(recordId);
+      const record = await woodTracker.getWoodRecord(0); // First record (ID = 0)
 
-      expect(record.id).to.equal(recordId);
-      expect(record.origin).to.equal(origin);
+      console.log("record: ", record);
+
+      expect(record.id).to.equal(0); // Auto-incremented ID
       expect(record.weightInKg).to.equal(weightInKg);
       expect(record.woodType).to.equal(woodType);
       expect(record.cutType).to.equal(cutType);
       expect(record.state).to.equal(0); // WoodState.Harvested
       expect(record.currentResponsible).to.equal(extractor.address);
-      expect(record.productionSite).to.equal(productionSite);
+      expect(record.productionSite).to.equal(extractor.address);
     });
 
     it("Should prevent non-Extractor from creating a wood record", async function () {
       await expect(
         woodTracker
           .connect(other)
-          .createWoodRecord(
-            recordId,
-            origin,
-            weightInKg,
-            woodType,
-            cutType,
-            productionSite
-          )
-      ).to.be.revertedWith("Error: Address does not have an assigned role.");
+          .createWoodRecord(weightInKg, woodType, cutType)
+      ).to.be.revertedWith("Error: Caller is not an extractor.");
     });
 
     it("Should allow current responsible to update wood record state", async function () {
       await woodTracker
         .connect(extractor)
-        .createWoodRecord(
-          recordId,
-          origin,
-          weightInKg,
-          woodType,
-          cutType,
-          productionSite
-        );
+        .createWoodRecord(weightInKg, woodType, cutType);
 
       await woodTracker
         .connect(extractor)
-        .updateWoodRecord(recordId, 1, 600); // WoodState.Transported
+        .updateWoodRecord(0, 1, 600); // Update state to WoodState.Transported
 
-      const record = await woodTracker.getWoodRecord(recordId);
+      const record = await woodTracker.getWoodRecord(0);
       expect(record.state).to.equal(1); // WoodState.Transported
       expect(record.weightInKg).to.equal(600);
     });
@@ -186,18 +165,11 @@ describe("WoodTracker", function () {
     it("Should prevent non-responsible party from updating wood record", async function () {
       await woodTracker
         .connect(extractor)
-        .createWoodRecord(
-          recordId,
-          origin,
-          weightInKg,
-          woodType,
-          cutType,
-          productionSite
-        );
+        .createWoodRecord(weightInKg, woodType, cutType);
 
-      expect(
-        woodTracker.connect(other).updateWoodRecord(recordId, 1, 600)
-      ).to.be.revertedWith("Error: Address does not have an assigned role.");
+      await expect(
+        woodTracker.connect(other).updateWoodRecord(0, 1, 600)
+      ).to.be.revertedWith("Error: Caller is not the current responsible party.");
     });
   });
 });

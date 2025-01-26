@@ -73,6 +73,7 @@ contract WoodTracker {
     constructor() {
         owner = msg.sender;
         roles[msg.sender] = Role.Admin; // Contract owner is also an admin
+        woodRecordCounter = 0;
     }
 
     /// @notice Modifiers
@@ -122,9 +123,7 @@ contract WoodTracker {
     }
 
     /// @notice Access role of a user (only registered roles can access).
-    function getRole(
-        address user
-    ) external view hasRole(msg.sender) returns (Role) {
+    function getRole(address user) external view returns (Role) {
         return roles[user];
     }
 
@@ -175,21 +174,23 @@ contract WoodTracker {
         int256 latitude,
         int256 longitude
     ) external isExtractor(msg.sender) {
-        require(msg.sender != address(0), "Error: Invalid site address.");
-        require(bytes(name).length > 0, "Error: Name cannot be empty.");
-        require(
-            latitude >= -90000000 && latitude <= 90000000,
-            "Error: Invalid latitude."
-        );
-        require(
-            longitude >= -180000000 && longitude <= 180000000,
-            "Error: Invalid longitude."
-        );
+        // require(msg.sender != address(0), "Error: Invalid site address.");
+        // require(bytes(name).length > 0, "Error: Name cannot be empty.");
 
-        require(
-            bytes(productionSites[msg.sender].name).length == 0,
-            "Error: A production site is already linked to this address. Only 1 production site per address is allowed."
-        );
+        // require(
+        //     latitude >= -90000000 && latitude <= 90000000,
+        //     "Error: Invalid latitude."
+        // );
+
+        // require(
+        //     longitude >= -180000000 && longitude <= 180000000,
+        //     "Error: Invalid longitude."
+        // );
+
+        // require(
+        //     bytes(productionSites[msg.sender].name).length == 0,
+        //     "Error: A production site is already linked to this address. Only 1 production site per address is allowed."
+        // );
 
         productionSites[msg.sender] = ProductionSite({
             name: name,
@@ -268,10 +269,10 @@ contract WoodTracker {
         string memory cutType
     ) external isExtractor(msg.sender) {
         require(weightInKg > 0, "Error: Weight must be greater than zero.");
-        require(
-            bytes(productionSites[msg.sender].name).length > 0,
-            "Error: Production site have not been initialized."
-        );
+        // require(
+        //     bytes(productionSites[msg.sender].name).length > 0,
+        //     "Error: Production site have not been initialized."
+        // );
 
         woodRecords[woodRecordCounter] = WoodRecord({
             id: woodRecordCounter,

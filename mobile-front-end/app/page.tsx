@@ -105,6 +105,31 @@ export default function Home() {
     }
   }
 
+  // async function createProductionSite(_role: number | null | undefined): Promise<void> {
+  //   console.log(`Assigning role ${role} for ${sender} at contract ${woodTrackerContractAddress}`);
+
+  //   if (!sender)
+  //     throw new Error("AssignRole Service - Error: No sender specified.");
+
+  //   if (!_role)
+  //     throw new Error("AssignRole Service - Error: Invalid role.");
+
+  //   try {
+  //     const txHash = writeContract({
+  //       address: woodTrackerContractAddress,
+  //       abi: woodTrackerContractAbi,
+  //       functionName: "assignRole",
+  //       args: [sender, _role],
+  //       account: sender
+  //     });
+
+  //     console.log("Transaction hash for assigning role: ", txHash);
+  //   } catch (error) {
+  //     console.log("Error assigning role: ", error);
+  //     throw error;
+  //   }
+  // }
+
   async function assignRole(_role: number | null | undefined): Promise<void> {
     console.log(`Assigning role ${role} for ${sender} at contract ${woodTrackerContractAddress}`);
 
@@ -222,16 +247,16 @@ export default function Home() {
                   <>
                     <Input
                       name="name"
-                      label="Production site name"
-                      placeholder="Enter production site name"
+                      label="Name"
+                      placeholder="Ex: Dumoulin Bois"
                       required
                       className="w-full"
                     />
 
                     <Input
                       name="capacity"
-                      label="Capacity"
-                      placeholder="Enter capacity"
+                      label="Capacity (kg)"
+                      placeholder="Ex: 1200"
                       type="number"
                       required
                       className="w-full"
@@ -240,7 +265,7 @@ export default function Home() {
                     <Input
                       name="address"
                       label="Address"
-                      placeholder="Enter postal address"
+                      placeholder="Ex: 3 Av. Du Bois, 92000 Nanterre"
                       className="w-full"
                     />
 
@@ -290,13 +315,10 @@ export default function Home() {
                 }
               </ModalBody>
 
-              <ModalFooter className="flex justify-between">
+              <ModalFooter className="flex justify-start">
                 <Button color="primary" onPress={() => handleRequestRole(onClose)}>
-                  {requestRoleLoading ? <Spinner color="default" size="sm" /> : "Add Role"}
+                  {requestRoleLoading ? <Spinner color="default" size="sm" /> : "Submit"}
                 </Button>
-                {<Button color="primary" onPress={() => handleRequestRole(onClose)}>
-                  {requestSiteCreationLoading ? <Spinner color="default" size="sm" /> : "Add Production Site"}
-                </Button>}
               </ModalFooter>
             </>
 
