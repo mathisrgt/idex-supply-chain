@@ -22,6 +22,7 @@ import { LogIn } from "lucide-react";
 import { woodTrackerContractAbi, woodTrackerContractAddress } from "@/environment/blockchain/contract";
 import { fetchUserRole } from "@/services/role";
 import { Role } from "@/types/users";
+import { CutType, WoodType } from "@/types/woodFlows";
 
 export default function Home() {
   useRedirectOnLargeScreen();
@@ -34,6 +35,13 @@ export default function Home() {
 
   const [role, setRole] = useState<Role | null>();
   const [requestedRole, setRequestedRole] = useState<Role | null>();
+
+  const [productionSiteName, setProductionSiteName] = useState<string>("");
+  const [capacity, setCapacity] = useState<number | null>(null);
+  const [location, setLocation] = useState<string>("");
+
+  const [permitFileName, setPermitFileName] = useState<string | null>(null);
+  const [certificateFileName, setCertificateFileName] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -60,6 +68,8 @@ export default function Home() {
   async function newAccount() {
     localStorage.setItem("walletAddress", '');
 
+    await waitInSec(1);
+
     console.log("Creation of a new account.");
 
     setLoading(true);
@@ -71,6 +81,7 @@ export default function Home() {
     } catch (error) {
       console.error(error)
     }
+
     setLoading(false);
   }
 
@@ -98,14 +109,16 @@ export default function Home() {
 
   async function checkRole() {
     if (sender) {
+      waitInSec(1);
+
       console.log("Check role for ", sender);
 
       try {
         const _role = await fetchUserRole(sender, sender);
-        if (_role !== Role.None) {
-          localStorage.setItem('role', _role.toString());
-          setRole(_role);
-        }
+
+        localStorage.setItem('role', _role.toString());
+        setRole(_role);
+
       } catch (error) {
         console.log("Error: ", error);
       }
@@ -146,6 +159,9 @@ export default function Home() {
     if (!_role)
       throw new Error("AssignRole Service - Error: Invalid role.");
 
+    if (_role === Role.Extractor.valueOf() && !(productionSiteName && capacity && permitFileName && certificateFileName && location))
+      throw new Error("AssignRole Service - Error: Missing parameters for Extractor.");
+
     try {
       await writeContractAsync({
         address: woodTrackerContractAddress,
@@ -157,6 +173,27 @@ export default function Home() {
     } catch (error) {
       console.log("Error assigning role: ", error);
       throw error;
+    }
+
+    if (_role === Role.Extractor.valueOf()) {
+      try {
+        await writeContractAsync({
+          address: woodTrackerContractAddress,
+          abi: woodTrackerContractAbi,
+          functionName: "createProductionSite",
+          args: [productionSiteName, capacity, [permitFileName], [certificateFileName], location],
+          account: sender
+        });
+
+        setProductionSiteName("");
+        setCapacity(0);
+        setPermitFileName(null);
+        setCertificateFileName(null);
+        setLocation("");
+      } catch (error) {
+        console.log("Error creating production site: ", error);
+        throw error;
+      }
     }
   }
 
@@ -178,7 +215,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    checkExistingAccount()
+    checkRole();
   }, [sender]);
 
   useEffect(() => {
@@ -211,6 +248,7 @@ export default function Home() {
               <ModalHeader className="flex flex-col gap-1">Request access</ModalHeader>
               <ModalBody className="gap-4">
                 <Alert color="warning" title="In this demo version, access requests are automatically approved." />
+                {(requestedRole && requestedRole.valueOf() === Role.Extractor) ? <Alert color="primary" title="2 confirmations will be required" /> : <></>}
 
                 <Select
                   label="Select a role"
@@ -218,6 +256,7 @@ export default function Home() {
                   onChange={(e) => {
                     const roleKey = e.target.value as keyof typeof Role;
                     setRequestedRole(Role[roleKey]);
+                    console.log("requestedRole:", Role[roleKey]);
                   }}
                 >
                   {Object.keys(Role).filter((key) => isNaN(Number(key)) && key !== "None").map((_role) => (
@@ -235,6 +274,8 @@ export default function Home() {
                       placeholder="Ex: Dumoulin Bois"
                       required
                       className="w-full"
+                      value={productionSiteName}
+                      onChange={(e) => setProductionSiteName(e.target.value)}
                     />
 
                     <Input
@@ -244,6 +285,7 @@ export default function Home() {
                       type="number"
                       required
                       className="w-full"
+                      onChange={(e) => setCapacity(Number(e.target.value))}
                     />
 
                     <Input
@@ -251,6 +293,8 @@ export default function Home() {
                       label="Address"
                       placeholder="Ex: 3 Av. Du Bois, 92000 Nanterre"
                       className="w-full"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
                     />
 
                     <div className="flex flex-row gap-2">
@@ -260,7 +304,7 @@ export default function Home() {
                           variant="flat"
                           onPress={() => document.getElementById("permit-upload")?.click()}
                         >
-                          Permits
+                          {permitFileName ?? "Permits"}
                         </Button>
                         <input
                           type="file"
@@ -268,7 +312,7 @@ export default function Home() {
                           className="hidden"
                           onChange={(e) => {
                             if (e.target.files?.length) {
-                              alert(`File selected: ${e.target.files[0].name}`);
+                              setPermitFileName(shortenAddress(e.target.files[0].name));
                             }
                           }}
                         />
@@ -280,7 +324,7 @@ export default function Home() {
                           variant="flat"
                           onPress={() => document.getElementById("certificate-upload")?.click()}
                         >
-                          Certificates
+                          {certificateFileName ?? "Certificates"}
                         </Button>
                         <input
                           type="file"
@@ -288,7 +332,7 @@ export default function Home() {
                           className="hidden"
                           onChange={(e) => {
                             if (e.target.files?.length) {
-                              alert(`File selected: ${e.target.files[0].name}`);
+                              setCertificateFileName(shortenAddress(e.target.files[0].name));
                             }
                           }}
                         />
@@ -300,7 +344,7 @@ export default function Home() {
               </ModalBody>
 
               <ModalFooter className="flex justify-start">
-                <Button color={requestedRole ? "primary" : "secondary"} onPress={() => handleRequestRole(onClose)} disabled={!requestedRole}>
+                <Button color={(requestedRole === Role.Extractor.valueOf() && productionSiteName && capacity && location && permitFileName && certificateFileName) || (requestedRole && requestedRole !== Role.Extractor.valueOf()) ? "primary" : "secondary"} onPress={() => handleRequestRole(onClose)} disabled={!requestedRole || (requestedRole === Role.Extractor.valueOf() && (!productionSiteName || !capacity || !location || !permitFileName || !certificateFileName))}>
                   {requestRoleLoading ? <Spinner color="default" size="sm" /> : "Submit"}
                 </Button>
               </ModalFooter>

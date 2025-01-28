@@ -24,6 +24,10 @@ import { useAccount, useDisconnect, useWriteContract } from "@cometh/connect-rea
 import WoodFlowSearchBar from "@/components/bars/WoodFlowSearchBar";
 import AddWoodFlowButton from "@/components/buttons/AddWoodFlowButton";
 import { woodTrackerContractAbi, woodTrackerContractAddress } from "@/environment/blockchain/contract";
+import { Role } from "@/types/users";
+import { fetchUserRole } from "@/services/role";
+import { fetchAllProductionSiteDetails, fetchProductionSiteDetails } from "@/services/productionSites";
+import { ProductionSite } from "@/types/productionSites";
 
 export default function Dashboard() {
     useRedirectOnLargeScreen();
@@ -31,11 +35,34 @@ export default function Dashboard() {
     const router = useRouter();
 
     const [loading, setLoading] = useState(true);
+    const [loadingProductionSite, setLoadingProductionSite] = useState(true);
     const [woodFlows, setWoodFlows] = useState<WoodFlow[]>();
+    const [productionSites, setProductionSites] = useState<ProductionSite[]>();
+    const [role, setRole] = useState<Role>();
 
     const { address: sender, isConnected } = useAccount();
     const { writeContractAsync } = useWriteContract();
     const { disconnect } = useDisconnect();
+
+    async function fetchRole() {
+        if (!sender) {
+            throw Error('No sender found.');
+        }
+
+        try {
+            setLoading(true);
+            const _userRole = await fetchUserRole(sender, sender);
+            setRole(_userRole);
+
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+
+            setLoading(false);
+            disconnect();
+            router.push('/');
+        }
+    }
 
     async function fetchWoodFlows() {
         try {
@@ -48,6 +75,23 @@ export default function Dashboard() {
             console.log(error);
 
             setLoading(false);
+            disconnect();
+            router.push('/');
+        }
+    }
+
+    async function fetchProductionSites() {
+        try {
+            setLoadingProductionSite(true);
+
+            const _productionSites = await fetchAllProductionSiteDetails(sender);
+            setProductionSites(_productionSites);
+
+            setLoadingProductionSite(false);
+        } catch (error) {
+            console.log(error);
+
+            setLoadingProductionSite(false);
             disconnect();
             router.push('/');
         }
@@ -88,7 +132,9 @@ export default function Dashboard() {
     }
 
     useEffect(() => {
+        fetchProductionSites();
         fetchWoodFlows();
+        fetchRole();
     }, []);
 
     return (
@@ -96,16 +142,16 @@ export default function Dashboard() {
             <main className="p-4 flex flex-col gap-4 min-h-screen">
                 <PageTitle text="Dashboard" />
                 <div className="flex flex-col flex-grow justify-center items-center">
-                    {loading ?
+                    {loading || loadingProductionSite ?
                         <Spinner color="default" /> :
-                        woodFlows ? woodFlows.length === 0 ?
+                        woodFlows && productionSites ? woodFlows.length === 0 ?
                             <div className="flex flex-col gap-4 items-center">
                                 <p>No wood flows recorded 🍃</p>
-                                <AddWoodFlowButton onSubmitCreateWoodFlow={createWoodFlow} />
+                                <AddWoodFlowButton onSubmitCreateWoodFlow={createWoodFlow} role={role} productionSite={productionSites.find((productionSite) => { return productionSite.address === sender })} />
                             </div> :
                             <div className="flex flex-col flex-1 w-full gap-4">
-                                <WoodFlowSearchBar onSubmitCreateWoodFlow={createWoodFlow} />
-                                <FlowList woodFlows={woodFlows} />
+                                <WoodFlowSearchBar onSubmitCreateWoodFlow={createWoodFlow} role={role} productionSite={productionSites.find((productionSite) => { return productionSite.address === sender })} />
+                                <FlowList woodFlows={woodFlows} productionSites={productionSites} />
                             </div> : "We're sorry, an error occurred while requesting user data."
                     }
                 </div>

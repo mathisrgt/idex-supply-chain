@@ -15,12 +15,15 @@ import { Plus, Search } from "lucide-react";
 import FlowCard from "../cards/FlowCard";
 import { WoodFlow } from "@/types/woodFlows";
 import AddWoodFlowButton from "../buttons/AddWoodFlowButton";
+import { ProductionSite } from "@/types/productionSites";
 
-export default function FlowList({ woodFlows }: { woodFlows: WoodFlow[] }) {
+export default function FlowList({ woodFlows, productionSites }: { woodFlows: WoodFlow[], productionSites: ProductionSite[] }) {
     return (
         <div className="flex flex-col gap-4">
             {woodFlows.map((woodFlow, id) => {
-                return <FlowCard woodFlow={woodFlow} key={id} />
+                const productionSite = productionSites.find((productionSite) => { return woodFlow.productionSite === productionSite.address });
+                if (productionSite)
+                    return <FlowCard key={id} woodFlow={woodFlow} productionSite={productionSite} />
             })}
         </div>
     );

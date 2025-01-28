@@ -12,12 +12,16 @@ import NavBar from "@/components/bars/NavBar";
 
 // Web3
 import AddWoodFlowButton from "../buttons/AddWoodFlowButton";
+import { Role } from "@/types/users";
+import { ProductionSite } from "@/types/productionSites";
 
 interface WoodFlowSearchBarParams {
     onSubmitCreateWoodFlow: Function;
+    role: Role | undefined;
+    productionSite?: ProductionSite;
 }
 
-export default function WoodFlowSearchBar({ onSubmitCreateWoodFlow }: WoodFlowSearchBarParams) {
+export default function WoodFlowSearchBar({ onSubmitCreateWoodFlow, role, productionSite }: WoodFlowSearchBarParams) {
     return (
         <div className="flex gap-2">
             <Input
@@ -25,7 +29,7 @@ export default function WoodFlowSearchBar({ onSubmitCreateWoodFlow }: WoodFlowSe
                 placeholder="Search..."
                 aria-label="Search input"
             />
-            <AddWoodFlowButton onSubmitCreateWoodFlow={onSubmitCreateWoodFlow} />
+            <AddWoodFlowButton onSubmitCreateWoodFlow={onSubmitCreateWoodFlow} role={role} productionSite={productionSite} />
         </div>
     );
 }

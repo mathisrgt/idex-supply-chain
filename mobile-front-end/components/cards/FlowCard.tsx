@@ -16,8 +16,9 @@ import { Hex } from "viem";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import { WoodFlow, WoodState } from "@/types/woodFlows";
+import { ProductionSite } from "@/types/productionSites";
 
-export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
+export default function FlowCard({ woodFlow, productionSite }: { woodFlow: WoodFlow, productionSite: ProductionSite }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     return (
@@ -57,7 +58,7 @@ export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
                                 <div className="flex flex-col gap-3">
                                     <div className="flex gap-2 items-center">
                                         <CalendarClock size={20} />
-                                        <p>08/12/2024</p>
+                                        <p>--/--/2025</p>
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <GitCommit size={20} />
@@ -69,7 +70,7 @@ export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <MapPinHouse size={20} />
-                                        <p>{"TBD"}</p>
+                                        <p>{productionSite.location}</p>
                                     </div>
                                 </div>
                                 <Accordion type="single" collapsible className="w-full">

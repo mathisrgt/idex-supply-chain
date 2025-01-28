@@ -5,6 +5,7 @@ import { Address, createPublicClient, http, Log, parseAbiItem, decodeEventLog, p
 import { polygonAmoy } from "viem/chains";
 import { useAccount } from "wagmi";
 import { wait } from "./other";
+import { ProductionSite } from "@/types/productionSites";
 
 const client = createPublicClient({
     chain: polygonAmoy,
@@ -39,13 +40,22 @@ async function fetchWoodRecordsId(): Promise<number[]> {
 async function fetchWoodRecordDetails(sender: Address, id: number): Promise<WoodFlow> {
     console.log(`Call to getWoodRecordDetail with address: `, sender);
 
-    const details = await client.readContract({
+    const details: any = await client.readContract({
         address: woodTrackerContractAddress,
         abi: woodTrackerContractAbi,
         functionName: "getWoodRecord",
         args: [id],
         account: sender,
     });
+
+    const siteDetails: ProductionSite = {
+        address: sender,
+        name: details[0],
+        capacity: Number(details[1]),
+        permit: details[2],
+        certificates: details[3],
+        location: details[4]
+    };
 
     console.log(`WoodRecord #${id}`, details);
 

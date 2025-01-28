@@ -80,7 +80,7 @@ export default function Account() {
                             router.push('/');
                         }}
                     >
-                        Disconnect
+                        Log out
                     </Button>
                 </>
                 :
