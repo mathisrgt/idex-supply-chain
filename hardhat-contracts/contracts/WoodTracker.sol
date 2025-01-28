@@ -23,17 +23,16 @@ contract WoodTracker {
         Delivered
     }
 
-    struct GeoLocation {
-        int256 latitude; // Latitude in degrees (e.g., 12345678 for 12.345678°)
-        int256 longitude; // Longitude in degrees (e.g., -12345678 for -12.345678°)
-    }
+    // struct GeoLocation {
+    //     int256 latitude; // Latitude in degrees (e.g., 12345678 for 12.345678°)
+    //     int256 longitude; // Longitude in degrees (e.g., -12345678 for -12.345678°)
+    // }
 
     uint256 private woodRecordCounter;
 
     /// @notice Struct to represent a wood record.
     struct WoodRecord {
         uint256 id;
-        GeoLocation origin;
         uint256 weightInKg;
         string woodType;
         string cutType;
@@ -48,7 +47,7 @@ contract WoodTracker {
         uint256 capacity;
         string[] permit;
         string[] certificates;
-        GeoLocation location;
+        string location;
     }
 
     address public owner;
@@ -112,6 +111,11 @@ contract WoodTracker {
     function getWoodRecord(
         uint256 id
     ) external view hasRole(msg.sender) returns (WoodRecord memory) {
+        require(
+            woodRecords[id].id != 0 || id == 0,
+            "Error: Wood record does not exist."
+        );
+
         return woodRecords[id];
     }
 
@@ -130,15 +134,16 @@ contract WoodTracker {
     /// @notice Write functions
 
     /// @notice Assign a role (only Admins can assign).
-    function assignRole(address user, Role role) external isAdmin(msg.sender) {
+    function assignRole(address user, Role role) external {
+        // isAdmin(msg.sender)
         require(user != address(0), "Error: Invalid address.");
         require(role != Role.None, "Error: Cannot assign 'None' as a role.");
-        if (role == Role.Admin) {
-            require(
-                msg.sender == owner,
-                "Error: Only the contract owner can assign or remove the Admin role."
-            );
-        }
+        // if (role == Role.Admin) {
+        //     require(
+        //         msg.sender == owner,
+        //         "Error: Only the contract owner can assign or remove the Admin role."
+        //     );
+        // }
 
         roles[user] = role;
 
@@ -147,10 +152,10 @@ contract WoodTracker {
 
     function removeUser(address user) external isAdmin(msg.sender) {
         require(user != address(0), "Error: Invalid address.");
-        require(
-            user != msg.sender,
-            "Error: You cannot remove your own account. Another admin must perform this action."
-        );
+        // require(
+        //     user != msg.sender,
+        //     "Error: You cannot remove your own account. Another admin must perform this action."
+        // );
         require(
             user != owner,
             "Error: The contract owner cannot be removed. Change ownership first."
@@ -160,6 +165,9 @@ contract WoodTracker {
             "Error: The user does not have an assigned role."
         );
 
+        if (roles[user] == Role.Extractor) {
+            delete productionSites[user]; // Remove their production site
+        }
         roles[user] = Role.None;
 
         emit UserRemoved(user);
@@ -171,33 +179,23 @@ contract WoodTracker {
         uint256 capacity,
         string[] memory permit,
         string[] memory certificates,
-        int256 latitude,
-        int256 longitude
+        string memory location
     ) external isExtractor(msg.sender) {
-        // require(msg.sender != address(0), "Error: Invalid site address.");
-        // require(bytes(name).length > 0, "Error: Name cannot be empty.");
+        require(msg.sender != address(0), "Error: Invalid site address.");
+        require(bytes(name).length > 0, "Error: Name cannot be empty.");
+        require(bytes(location).length > 0, "Error: Location cannot be empty.");
 
-        // require(
-        //     latitude >= -90000000 && latitude <= 90000000,
-        //     "Error: Invalid latitude."
-        // );
-
-        // require(
-        //     longitude >= -180000000 && longitude <= 180000000,
-        //     "Error: Invalid longitude."
-        // );
-
-        // require(
-        //     bytes(productionSites[msg.sender].name).length == 0,
-        //     "Error: A production site is already linked to this address. Only 1 production site per address is allowed."
-        // );
+        require(
+            bytes(productionSites[msg.sender].name).length == 0,
+            "Error: A production site is already linked to this address. Only 1 production site per address is allowed."
+        );
 
         productionSites[msg.sender] = ProductionSite({
             name: name,
             capacity: capacity,
             permit: permit,
             certificates: certificates,
-            location: GeoLocation(latitude, longitude)
+            location: location
         });
 
         emit ProductionSiteCreated(msg.sender);
@@ -217,8 +215,13 @@ contract WoodTracker {
 
         ProductionSite storage site = productionSites[msg.sender];
 
-        site.name = name;
-        site.capacity = capacity;
+        if (bytes(name).length > 0) {
+            site.name = name;
+        }
+
+        if (capacity > 0) {
+            site.capacity = capacity;
+        }
 
         emit ProductionSiteUpdated(msg.sender);
     }
@@ -269,14 +272,13 @@ contract WoodTracker {
         string memory cutType
     ) external isExtractor(msg.sender) {
         require(weightInKg > 0, "Error: Weight must be greater than zero.");
-        // require(
-        //     bytes(productionSites[msg.sender].name).length > 0,
-        //     "Error: Production site have not been initialized."
-        // );
+        require(
+            bytes(productionSites[msg.sender].name).length > 0,
+            "Error: Production site have not been initialized."
+        );
 
         woodRecords[woodRecordCounter] = WoodRecord({
             id: woodRecordCounter,
-            origin: productionSites[msg.sender].location,
             weightInKg: weightInKg,
             woodType: woodType,
             cutType: cutType,
