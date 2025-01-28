@@ -16,7 +16,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "WoodTracker",
-  description: "Wood supply chain traceability and complience dApp.",
+  description: "Traceability and compliance of the dApp wood supply chain, an ESILV and IDEX project.",
 };
 
 export default function RootLayout({
