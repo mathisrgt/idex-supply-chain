@@ -56,7 +56,7 @@ export default function AddAccountButton({ onAssignRole: assignRole }: { onAssig
                                 setRole(Role[roleKey]);
                             }}
                         >
-                            {Object.keys(Role).filter((key) => isNaN(Number(key)) && key !== "None").map((_role) => (
+                            {Object.keys(Role).filter((key) => isNaN(Number(key)) && key !== "None" && key !== "Extractor").map((_role) => (
                                 <SelectItem key={_role} value={_role}>
                                     {_role}
                                 </SelectItem>
