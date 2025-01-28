@@ -150,7 +150,8 @@ contract WoodTracker {
         emit RoleAssigned(user);
     }
 
-    function removeUser(address user) external isAdmin(msg.sender) {
+    function removeUser(address user) external {
+        // isAdmin(msg.sender)
         require(user != address(0), "Error: Invalid address.");
         // require(
         //     user != msg.sender,
