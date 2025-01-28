@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Button, Input, Modal, useDisclosure, ModalBody, ModalContent, ModalFooter, ModalHeader, Chip, Card, CardHeader, CardBody, CardFooter, Select, SelectItem, Spinner } from "@nextui-org/react";
+import { Button, Input, Modal, useDisclosure, ModalBody, ModalContent, ModalFooter, ModalHeader, Chip, Card, CardHeader, CardBody, CardFooter, Select, SelectItem, Spinner } from "@heroui/react";
 
 // UX (Components)
 

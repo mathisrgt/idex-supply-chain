@@ -5,8 +5,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Input, Spinner } from "@nextui-org/react";
-import { Button } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Input, Spinner } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { Copy } from "lucide-react";
 
 // UX (Components)
@@ -74,7 +74,7 @@ export default function Account() {
                     <Button
                         color="danger"
                         className="w-full"
-                        onClick={() => {
+                        onPress={() => {
                             disconnect();
                             router.push('/');
                         }}
@@ -85,7 +85,7 @@ export default function Account() {
                     <Button
                         color="default"
                         className="w-full"
-                        onClick={() => {
+                        onPress={() => {
                             fetchAllProductionSiteDetails(accountAddress);
                         }}
                     >

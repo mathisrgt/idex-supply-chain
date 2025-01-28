@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, Spinner } from "@nextui-org/react";
+import { Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader, Spinner } from "@heroui/react";
 import { Address } from "viem";
 
 interface DeleteAccountButtonProps {

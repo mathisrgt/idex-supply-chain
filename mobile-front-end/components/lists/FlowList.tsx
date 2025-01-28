@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Input } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Input } from "@heroui/react";
 
 // UX (Components)
 
@@ -14,21 +14,14 @@ import { useAccount, useDisconnect } from 'wagmi'
 import { Plus, Search } from "lucide-react";
 import FlowCard from "../cards/FlowCard";
 import { WoodFlow } from "@/types/woodFlows";
+import AddWoodFlowButton from "../buttons/AddWoodFlowButton";
 
 export default function FlowList({ woodFlows }: { woodFlows: WoodFlow[] }) {
     return (
-        <>
-            <Input
-                placeholder="Search..."
-                type="text"
-                endContent={
-                    <Search className="text-default-400 pointer-events-none flex-shrink-0" size={20} />
-                }
-                className="flex justify-between w-full"
-            />
-            {woodFlows.map((woodFlow) => {
-                return <FlowCard woodFlow={woodFlow} />
+        <div className="flex flex-col gap-4">
+            {woodFlows.map((woodFlow, id) => {
+                return <FlowCard woodFlow={woodFlow} key={id} />
             })}
-        </>
+        </div>
     );
 }

@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, useDisclosure } from "@nextui-org/react";
+import { Alert, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, useDisclosure } from "@heroui/react";
+
 
 // Web3
 import Image from "next/image";
@@ -38,7 +39,7 @@ export default function Home() {
 
   const { isPending, connectAsync, error: connectError } = useConnect();
   const { address: sender, isConnected } = useAccount();
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
 
   async function connectWallet() {
     const _walletAddress = localStorage.getItem("walletAddress");
@@ -47,7 +48,13 @@ export default function Home() {
       throw Error("No wallet found.");
 
     console.log("Connect with address:", _walletAddress);
-    await connectAsync({ address: _walletAddress as Address });
+
+    try {
+      await connectAsync({ address: _walletAddress as Address });
+      console.log('Connection succeed.');
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   async function newAccount() {
@@ -57,9 +64,13 @@ export default function Home() {
 
     setLoading(true);
 
-    await connectAsync();
-    await saveAccount();
-
+    try {
+      await connectAsync();
+      await saveAccount();
+      await checkRole();
+    } catch (error) {
+      console.error(error)
+    }
     setLoading(false);
   }
 
@@ -97,8 +108,10 @@ export default function Home() {
 
       try {
         const _role = await fetchUserRole(sender, sender);
-        localStorage.setItem('role', _role.toString());
-        setRole(_role);
+        if (_role !== Role.None) {
+          localStorage.setItem('role', _role.toString());
+          setRole(_role);
+        }
       } catch (error) {
         console.log("Error: ", error);
       }
@@ -131,7 +144,7 @@ export default function Home() {
   // }
 
   async function assignRole(_role: number | null | undefined): Promise<void> {
-    console.log(`Assigning role ${role} for ${sender} at contract ${woodTrackerContractAddress}`);
+    console.log(`Assigning role ${_role} for ${sender} at contract ${woodTrackerContractAddress}`);
 
     if (!sender)
       throw new Error("AssignRole Service - Error: No sender specified.");
@@ -140,15 +153,13 @@ export default function Home() {
       throw new Error("AssignRole Service - Error: Invalid role.");
 
     try {
-      const txHash = writeContract({
+      await writeContractAsync({
         address: woodTrackerContractAddress,
         abi: woodTrackerContractAbi,
         functionName: "assignRole",
         args: [sender, _role],
         account: sender
       });
-
-      console.log("Transaction hash for assigning role: ", txHash);
     } catch (error) {
       console.log("Error assigning role: ", error);
       throw error;
@@ -157,20 +168,19 @@ export default function Home() {
 
   async function handleRequestRole(onClose: () => void) {
     console.log(`Request role ${requestedRole} for ${sender}`)
+
     setRequestRoleLoading(true);
 
     try {
       await assignRole(requestedRole);
-
-      await waitInSec(5);
-
-      checkRole();
-
-      onClose();
+      await checkRole();
     } catch (error) {
       console.error("Error: Unable to request role.", error);
     }
+
     setRequestRoleLoading(false);
+
+    onClose();
   }
 
   useEffect(() => {
@@ -202,32 +212,15 @@ export default function Home() {
         placement="center"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
-        motionProps={{
-          variants: {
-            enter: {
-              y: 0,
-              opacity: 1,
-              transition: {
-                duration: 0.3,
-                ease: "easeOut",
-              },
-            },
-            exit: {
-              y: -20,
-              opacity: 0,
-              transition: {
-                duration: 0.2,
-                ease: "easeIn",
-              },
-            },
-          }
-        }}
+
       >
         <ModalContent>
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">Request access</ModalHeader>
-              <ModalBody>
+              <ModalBody className="gap-4">
+                <Alert color="danger" title="In this demo version, access requests are automatically approved." />
+
                 <Select
                   label="Select a role"
                   fullWidth
@@ -316,7 +309,7 @@ export default function Home() {
               </ModalBody>
 
               <ModalFooter className="flex justify-start">
-                <Button color="primary" onPress={() => handleRequestRole(onClose)}>
+                <Button color={requestedRole ? "primary" : "secondary"} onPress={() => handleRequestRole(onClose)} disabled={!requestedRole}>
                   {requestRoleLoading ? <Spinner color="default" size="sm" /> : "Submit"}
                 </Button>
               </ModalFooter>
@@ -336,7 +329,7 @@ export default function Home() {
           </div>
 
           {!sender && <Button
-            onClick={() => { sender ? connectWallet() : newAccount() }} color={"primary"} className={`w-full ${isPending || !!connectError ? "bg-zinc-800" : ""}`} size="lg" disabled={isPending || isConnected || !!connectError}>
+            onPress={() => { sender ? connectWallet() : newAccount() }} color={"primary"} className={`w-full ${isPending || !!connectError ? "bg-zinc-800" : ""}`} size="lg" disabled={isPending || isConnected || !!connectError}>
             {isPending || loading ? <Spinner color="default" size="md" /> :
               connectError !== null ? "Connection denied" :
                 sender ?
@@ -347,17 +340,17 @@ export default function Home() {
           </Button>}
 
           {sender && !role && <Button
-            onClick={onOpen} color={"primary"} className={`w-full ${requestRoleLoading && "bg-zinc-800"}`} size="lg" disabled={isPending || !!connectError}>
+            onPress={onOpen} color={"primary"} className={`w-full ${requestRoleLoading && "bg-zinc-800"}`} size="lg" disabled={isPending || !!connectError}>
             {requestRoleLoading ? <Spinner color="default" size="md" /> : "Request access"}
           </Button>}
 
           {sender && role ? <Button
-            onClick={() => { router.push("/home"); }} color="primary" className="w-ful" size="lg">
+            onPress={() => { router.push("/home"); }} color="primary" className="w-ful" size="lg">
             Continue
           </Button> : <></>}
 
           {sender && <Button
-            onClick={newAccount} className={`w-full ${isPending ? "bg-zinc-800" : ""}`} color="primary" size="lg" disabled={isPending}>
+            onPress={newAccount} className={`w-full ${isPending ? "bg-zinc-800" : ""}`} color="primary" size="lg" disabled={isPending}>
             {isPending ? <Spinner color="default" size="md" /> : "New account"}
           </Button>}
         </div>

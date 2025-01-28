@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, Spinner } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, Spinner } from "@heroui/react";
 
 // UX (Components)
 import NavBar from "@/components/bars/NavBar";
@@ -20,9 +20,12 @@ import { useEffect, useState } from "react";
 import { User } from "@/types/users";
 import { waitInSec } from "@/services/other";
 import { useAccount, useWriteContract } from "@cometh/connect-react-hooks";
-import { Address } from "viem";
+import { Address, createPublicClient, http } from "viem";
 import { woodTrackerContractAbi, woodTrackerContractAddress } from "@/environment/blockchain/contract";
-
+import { createComethPaymasterClient, createSmartAccountClient } from "@cometh/connect-sdk-4337";
+import { bundlerUrl, paymasterUrl } from "@/environment/blockchain/account_abstraction";
+import { polygonAmoy } from "viem/chains";
+import { rpcUrl } from "@/environment/blockchain/rpc";
 
 // Features: 
 // - Company caracteristics
@@ -32,7 +35,7 @@ import { woodTrackerContractAbi, woodTrackerContractAddress } from "@/environmen
 
 export default function Company() {
 
-    const { isConnected, address: sender } = useAccount();
+    const { isConnected, address: sender, smartAccountClient } = useAccount();
     const { writeContract, isError, isSuccess, error, data } = useWriteContract();
 
     const router = useRouter();
@@ -41,7 +44,6 @@ export default function Company() {
     const [users, setUsers] = useState<User[]>();
 
     useRedirectOnLargeScreen();
-    // useRedirectWhenNotConnected(isConnected);
 
     async function fetchUsers() {
         await waitInSec(1);
@@ -78,7 +80,7 @@ export default function Company() {
             throw new Error("AssignRole Service - Error: Invalid role. Must be greater than 0.");
 
         try {
-            const txHash = writeContract({
+            writeContract({
                 address: woodTrackerContractAddress,
                 abi: woodTrackerContractAbi,
                 functionName: "assignRole",
@@ -86,7 +88,6 @@ export default function Company() {
                 account: sender
             });
 
-            console.log("Transaction hash for assigning role: ", txHash);
         } catch (error) {
             console.log("Error assigning role: ", error);
             throw error;

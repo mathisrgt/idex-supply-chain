@@ -1,5 +1,21 @@
 import { Address } from "viem";
 
+export enum WoodType {
+    Oak,
+    Pine,
+    Cedar,
+    Birch,
+    Mahogany,
+}
+
+export enum CutType {
+    Rough,
+    Smooth,
+    Plank,
+    Beam,
+    Veneer,
+}
+
 export enum WoodState {
     Harvested,
     Transported,
@@ -10,7 +26,6 @@ export enum WoodState {
 
 export type WoodFlow = {
     id: number;
-    origin: number[];
     weightInKg: number;
     woodType: string;
     cutType: string;

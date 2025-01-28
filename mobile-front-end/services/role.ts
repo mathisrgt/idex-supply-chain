@@ -10,7 +10,7 @@ const client = createPublicClient({
     transport: http(rpcUrl),
 });
 
-async function fetchUserCreated(): Promise<Address[]> {
+async function fetchUsers(): Promise<Address[]> {
     const roleAssignedEvent = parseAbi(["event RoleAssigned(address indexed user)"]);
 
     const logs: Log[] = await client.getLogs({
@@ -20,17 +20,22 @@ async function fetchUserCreated(): Promise<Address[]> {
         toBlock: "latest",
     });
 
-    const userAddresses = logs.map((log) => {
+    const uniqueUserAddresses = new Set<Address>();
+
+    logs.map((log) => {
         const decodedLog = decodeEventLog({
             abi: roleAssignedEvent,
             data: log.data,
             topics: log.topics,
         });
 
-        return decodedLog.args.user as Address;
+        const user = decodedLog.args.user as Address;
+        uniqueUserAddresses.add(user);
     });
 
-    console.log("fetchUserCreated: ", userAddresses);
+    const userAddresses = Array.from(uniqueUserAddresses);
+
+    console.log("fetchUserCreated (unique): ", userAddresses);
 
     return userAddresses;
 }
@@ -57,7 +62,7 @@ export async function fetchAllUserRoles(sender: Address | undefined): Promise<{ 
     if (!sender)
         throw Error('User Roles Service - Error: No sender specified.');
 
-    const userAddresses = await fetchUserCreated();
+    const userAddresses = await fetchUsers();
 
     const userRoles = [];
     for (const address of userAddresses) {

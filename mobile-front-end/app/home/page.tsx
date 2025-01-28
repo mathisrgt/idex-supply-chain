@@ -25,6 +25,7 @@ import useRedirectOnLargeScreen from "@/hooks/useRedirectOnLargeScreen";
 import TransactionPreviewList from "@/components/lists/TransactionPreviewList";
 import PageTitle, { PageSecondaryTitle } from "@/components/text/PageTitle";
 import { waitInSec } from "@/services/other";
+import { Alert } from "@heroui/react";
 
 export default function Home() {
     useRedirectOnLargeScreen();
@@ -37,6 +38,7 @@ export default function Home() {
         <>
             <main className="p-4 flex flex-col gap-4">
                 <PageTitle text="Home" />
+
                 <Carousel className="flex flex-col w-full gap-2">
                     <PageSecondaryTitle text="Activity" />
                     <CarouselContent>

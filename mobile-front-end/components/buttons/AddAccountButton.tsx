@@ -2,7 +2,7 @@
 
 // React and NextJS
 import { useState } from "react";
-import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Select, SelectItem } from "@nextui-org/react";
+import { Button, Input, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Select, SelectItem } from "@heroui/react";
 import { UserRoundPlus } from "lucide-react";
 import { Role } from "@/types/users";
 import { Address } from "viem";
@@ -30,8 +30,8 @@ export default function AddAccountButton({ onAssignRole: assignRole }: { onAssig
 
     return (
         <>
-            <Button onClick={openModal} color="secondary">
-                <UserRoundPlus size={17} />
+            <Button onPress={openModal} color="secondary">
+                <UserRoundPlus size={17} color="#5b6069" />
             </Button>
 
             <Modal isOpen={isModalOpen} onClose={closeModal} backdrop="blur"
@@ -65,10 +65,10 @@ export default function AddAccountButton({ onAssignRole: assignRole }: { onAssig
                     </ModalBody>
 
                     <ModalFooter>
-                        <Button onClick={closeModal} variant="light">
+                        <Button onPress={closeModal} variant="light">
                             Cancel
                         </Button>
-                        <Button onClick={handleSubmit} color={userAddress ? "primary" : 'secondary'} disabled={!userAddress}>Submit</Button>
+                        <Button onPress={handleSubmit} color={userAddress && role ? "primary" : 'secondary'} disabled={!userAddress || !role}>Submit</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal >

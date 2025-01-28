@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { Redo2, Smartphone } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -15,7 +15,7 @@ export default function NotSupported() {
                     <h1 className="text-xl">Sorry, this device is not supported.</h1>
                     <p className="text-sm text-slate-600">WoodTracker is only available on smartphone.</p>
                 </div>
-                <Button color="primary" onClick={() => {
+                <Button color="primary" onPress={() => {
                     router.back();
                 }}>
                     <Redo2 />

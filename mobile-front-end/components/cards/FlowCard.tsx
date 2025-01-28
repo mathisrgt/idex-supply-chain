@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // UI
-import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Chip } from "@nextui-org/react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Link, Tabs, Tab, Button, useDisclosure, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Chip } from "@heroui/react";
 
 // UX (Components)
 
@@ -15,7 +15,7 @@ import { Calendar, CalendarClock, Edit2, GitCommit, MapPinHouse, Plus, Truck, We
 import { Hex } from "viem";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
-import { WoodFlow } from "@/types/woodFlows";
+import { WoodFlow, WoodState } from "@/types/woodFlows";
 
 export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -61,7 +61,7 @@ export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <GitCommit size={20} />
-                                        <p>Shipping</p>
+                                        <p>{WoodState[woodFlow.state].toString()}</p>
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <Weight size={20} />
@@ -69,7 +69,7 @@ export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
                                     </div>
                                     <div className="flex gap-2 items-center">
                                         <MapPinHouse size={20} />
-                                        <p>{woodFlow.origin}</p>
+                                        <p>{"TBD"}</p>
                                     </div>
                                 </div>
                                 <Accordion type="single" collapsible className="w-full">
@@ -127,7 +127,7 @@ export default function FlowCard({ woodFlow }: { woodFlow: WoodFlow }) {
                             <Truck size={15} />
                         </Chip>
                         <Chip>
-                            {woodFlow.weightInKg}
+                            {woodFlow.weightInKg} kg
                         </Chip>
                         <Chip>Paris, France</Chip>
                     </CardFooter>

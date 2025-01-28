@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Home, User, MessageCircle, HandCoins } from 'lucide-react';
-import { Badge } from "@nextui-org/react";
+import { Badge } from "@heroui/react";
 
 export default function FlowCreationForm() {
     return (

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 // UI
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { Button } from "@nextui-org/react";
+import { Button } from "@heroui/react";
 import { ArrowRight, ArrowRightIcon } from "lucide-react";
 import { PageSecondaryTitle } from "../text/PageTitle";
 import TransactionCard from "../cards/TransactionCard";

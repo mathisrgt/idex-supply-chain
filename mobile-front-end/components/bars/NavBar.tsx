@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Home, User, LayoutGrid, Factory, LayoutList, Building, Building2 } from 'lucide-react';
-import { Badge } from "@nextui-org/react";
+import { Badge } from "@heroui/react";
 
 export default function BottomNavBar() {
     return (

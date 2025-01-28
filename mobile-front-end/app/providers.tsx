@@ -4,7 +4,7 @@
 import { ReactNode } from "react";
 
 // UI
-import { NextUIProvider } from "@nextui-org/react";
+import { HeroUIProvider } from "@heroui/react";
 
 // Web3
 import { polygonAmoy } from "viem/chains";
@@ -49,9 +49,9 @@ export const Providers: React.FC<ProvidersProps> = ({ children }) => {
                 }}
                 queryClient={queryClient}
             >
-                <NextUIProvider>
+                <HeroUIProvider>
                     {children}
-                </NextUIProvider>
+                </HeroUIProvider>
             </ConnectProvider>
         </QueryClientProvider>
     </WagmiProvider>
