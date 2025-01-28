@@ -36,7 +36,7 @@ import { rpcUrl } from "@/environment/blockchain/rpc";
 export default function Company() {
 
     const { isConnected, address: sender, smartAccountClient } = useAccount();
-    const { writeContract, isError, isSuccess, error, data } = useWriteContract();
+    const { writeContractAsync, isError, isSuccess, error, data } = useWriteContract();
 
     const router = useRouter();
 
@@ -46,8 +46,6 @@ export default function Company() {
     useRedirectOnLargeScreen();
 
     async function fetchUsers() {
-        await waitInSec(1);
-
         try {
             const response = await fetchAllUserRoles(sender);
             setUsers(response);
@@ -80,7 +78,7 @@ export default function Company() {
             throw new Error("AssignRole Service - Error: Invalid role. Must be greater than 0.");
 
         try {
-            writeContract({
+            const txHash = await writeContractAsync({
                 address: woodTrackerContractAddress,
                 abi: woodTrackerContractAbi,
                 functionName: "assignRole",
@@ -88,10 +86,13 @@ export default function Company() {
                 account: sender
             });
 
+            console.log("Transaction hash for user's role update: ", txHash);
         } catch (error) {
             console.log("Error assigning role: ", error);
             throw error;
         }
+
+        await fetchUsers();
     }
 
     /**
@@ -109,8 +110,7 @@ export default function Company() {
             throw new Error("RemoveUser Service - Error: No user specified.");
 
         try {
-            // Call the `removeUser` function on the contract
-            const txHash = writeContract({
+            const txHash = await writeContractAsync({
                 address: woodTrackerContractAddress,
                 abi: woodTrackerContractAbi,
                 functionName: "removeUser",

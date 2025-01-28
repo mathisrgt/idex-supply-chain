@@ -26,12 +26,10 @@ export default function DeleteAccountButton({ onRemoveUser: removeUser }: Delete
 
     return (
         <>
-            {/* Delete Button */}
             <Button color="danger" variant="light" onPress={openModal}>
                 Delete
             </Button>
 
-            {/* Confirmation Modal */}
             <Modal isOpen={isModalOpen} onOpenChange={setModalOpen}
                 backdrop="blur"
                 placement="center"
@@ -58,14 +56,14 @@ export default function DeleteAccountButton({ onRemoveUser: removeUser }: Delete
                 <ModalContent>
                     <ModalHeader className="text-lg font-bold">Confirm Deletion</ModalHeader>
                     <ModalBody>
-                        {removeRoleLoading ? <Spinner color="danger" /> : <p>Are you sure you want to delete this account? You'll need to add it again before the account can interact with the company's flows.</p>}
+                        <p>Are you sure you want to delete this account? You'll need to add it again before the account can interact with the company's flows.</p>
                     </ModalBody>
                     <ModalFooter className="flex justify-between">
                         <Button variant="light" onPress={closeModal} disabled={removeRoleLoading}>
                             Cancel
                         </Button>
                         <Button color="danger" onPress={handleDelete} disabled={removeRoleLoading}>
-                            Confirm
+                            {removeRoleLoading ? <Spinner color="white" size="sm" /> : "Confirm"}
                         </Button>
                     </ModalFooter>
                 </ModalContent>

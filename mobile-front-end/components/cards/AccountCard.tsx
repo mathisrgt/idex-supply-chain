@@ -28,12 +28,13 @@ interface AccountCardProps {
 export default function AccountCard({ userAddress, role, onAssignRole: assignRole, onRemoveUser: removeUser }: AccountCardProps) {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+    const [requestedNewRole, setRequestedNewRole] = useState<Role | null>();
     const [editRoleLoading, setEditRoleLoading] = useState(false);
 
     async function handleEditRole(onClose: () => void) {
         setEditRoleLoading(true);
         try {
-            await assignRole(userAddress, role);
+            await assignRole(userAddress, requestedNewRole);
             onClose();
         } catch (error) {
             console.error("Error: Unable to edit role.", error);
@@ -104,30 +105,22 @@ export default function AccountCard({ userAddress, role, onAssignRole: assignRol
                                         ],
                                     }}
                                 />
+
                                 <Select
                                     label="Role"
                                     labelPlacement="inside"
-                                    defaultSelectedKeys={[Role[role].toString().toLowerCase()]}
+                                    defaultSelectedKeys={[Role[role].toString()]}
                                     className="flex justify-between items-center w-full"
+                                    onChange={(e) => {
+                                        const roleKey = e.target.value as keyof typeof Role;
+                                        setRequestedNewRole(Role[roleKey]);
+                                    }}
                                 >
-                                    <SelectItem key={'admin'}>
-                                        Admin
-                                    </SelectItem>
-                                    <SelectItem key={'extractor'}>
-                                        Extractor
-                                    </SelectItem>
-                                    <SelectItem key={'transporter'}>
-                                        Transporter
-                                    </SelectItem>
-                                    <SelectItem key={'warehouse'}>
-                                        Warehouse
-                                    </SelectItem>
-                                    <SelectItem key={'manufacturer'}>
-                                        Manufacturer
-                                    </SelectItem>
-                                    <SelectItem key={'controller'}>
-                                        Reader
-                                    </SelectItem>
+                                    {Object.keys(Role).filter((key) => isNaN(Number(key)) && key !== "None").map((_role) => (
+                                        <SelectItem key={_role.valueOf()} value={_role}>
+                                            {_role}
+                                        </SelectItem>
+                                    ))}
                                 </Select>
                             </ModalBody>
                             <ModalFooter className="flex justify-between">

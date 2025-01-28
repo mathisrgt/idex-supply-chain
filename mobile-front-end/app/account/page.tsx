@@ -71,6 +71,7 @@ export default function Account() {
                             ],
                         }}
                     />
+
                     <Button
                         color="danger"
                         className="w-full"
@@ -80,16 +81,6 @@ export default function Account() {
                         }}
                     >
                         Disconnect
-                    </Button>
-
-                    <Button
-                        color="default"
-                        className="w-full"
-                        onPress={() => {
-                            fetchAllProductionSiteDetails(accountAddress);
-                        }}
-                    >
-                        Test call fetchAllProductionSiteDetails
                     </Button>
                 </>
                 :

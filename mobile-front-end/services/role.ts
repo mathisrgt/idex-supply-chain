@@ -4,6 +4,7 @@ import { Address, createPublicClient, decodeEventLog, http, Log, parseAbi } from
 import { polygonAmoy } from "viem/chains";
 import { wait, waitInSec } from "./other";
 import { useAccount } from "@cometh/connect-react-hooks";
+import { Role } from "@/types/users";
 
 const client = createPublicClient({
     chain: polygonAmoy,
@@ -40,7 +41,7 @@ async function fetchUsers(): Promise<Address[]> {
     return userAddresses;
 }
 
-export async function fetchUserRole(sender: Address, user: Address): Promise<number> {
+export async function fetchUserRole(sender: Address, user: Address): Promise<Role> {
     console.log(`Call to fetchUserRole with address: `, sender);
 
     const roleId = await client.readContract({

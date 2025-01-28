@@ -56,14 +56,11 @@ export default function Dashboard() {
     async function createWoodFlow(weightInKg: number, woodType: WoodType, cutType: CutType): Promise<void> {
         const lastId = woodFlows && woodFlows.length > 0
             ? Math.max(...woodFlows.map((flow) => Number(flow.id)))
-            : 0;
+            : -1;
 
         const newId = lastId + 1;
 
-        console.log(`Creation of the Wood Flow #${newId} by sender ${sender} at contract ${woodTrackerContractAddress} with params:\n
-                - Wood type: ${woodType}\n
-                - Cut type: ${cutType}\n
-                `);
+        console.log(`Creation of the Wood Flow #${newId} by sender ${sender} at contract ${woodTrackerContractAddress} with params: Wood type: ${WoodType[woodType].toString()} / Cut type: ${WoodType[cutType].toString()}`);
 
         if (!sender)
             throw new Error("CreateWoodFlow Service - Error: No sender specified.");
@@ -72,13 +69,15 @@ export default function Dashboard() {
             throw new Error("CreateWoodFlow Service - Error: Missing parameters.");
 
         try {
-            await writeContractAsync({
+            const txHash = await writeContractAsync({
                 address: woodTrackerContractAddress,
                 abi: woodTrackerContractAbi,
                 functionName: "createWoodRecord",
-                args: [weightInKg, woodType, cutType],
+                args: [weightInKg, WoodType[woodType].toString(), WoodType[cutType].toString()],
                 account: sender
             });
+
+            console.log("Hash for the wood flow creation: ", txHash);
 
         } catch (error) {
             console.log("Error creating the wood flow: ", error);

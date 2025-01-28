@@ -186,14 +186,9 @@ export const woodTrackerContractAbi: Abi = [
                 "type": "string[]"
             },
             {
-                "internalType": "int256",
-                "name": "latitude",
-                "type": "int256"
-            },
-            {
-                "internalType": "int256",
-                "name": "longitude",
-                "type": "int256"
+                "internalType": "string",
+                "name": "location",
+                "type": "string"
             }
         ],
         "name": "createProductionSite",
@@ -257,21 +252,9 @@ export const woodTrackerContractAbi: Abi = [
                         "type": "string[]"
                     },
                     {
-                        "components": [
-                            {
-                                "internalType": "int256",
-                                "name": "latitude",
-                                "type": "int256"
-                            },
-                            {
-                                "internalType": "int256",
-                                "name": "longitude",
-                                "type": "int256"
-                            }
-                        ],
-                        "internalType": "struct WoodTracker.GeoLocation",
+                        "internalType": "string",
                         "name": "location",
-                        "type": "tuple"
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct WoodTracker.ProductionSite",
@@ -317,23 +300,6 @@ export const woodTrackerContractAbi: Abi = [
                         "internalType": "uint256",
                         "name": "id",
                         "type": "uint256"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "int256",
-                                "name": "latitude",
-                                "type": "int256"
-                            },
-                            {
-                                "internalType": "int256",
-                                "name": "longitude",
-                                "type": "int256"
-                            }
-                        ],
-                        "internalType": "struct WoodTracker.GeoLocation",
-                        "name": "origin",
-                        "type": "tuple"
                     },
                     {
                         "internalType": "uint256",

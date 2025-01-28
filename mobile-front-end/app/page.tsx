@@ -87,12 +87,6 @@ export default function Home() {
     }
   }
 
-  async function checkLoggedAccountAndRedirect() {
-    if (isConnected && role) {
-      router.push("/home");
-    }
-  }
-
   async function saveAccount() {
     console.log('Save wallet address: ', sender);
 
@@ -184,10 +178,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    console.log('Sender updated: ', sender);
-    saveAccount();
-    checkRole();
-    checkLoggedAccountAndRedirect();
+    checkExistingAccount()
   }, [sender]);
 
   useEffect(() => {
@@ -219,7 +210,7 @@ export default function Home() {
             <>
               <ModalHeader className="flex flex-col gap-1">Request access</ModalHeader>
               <ModalBody className="gap-4">
-                <Alert color="danger" title="In this demo version, access requests are automatically approved." />
+                <Alert color="warning" title="In this demo version, access requests are automatically approved." />
 
                 <Select
                   label="Select a role"
